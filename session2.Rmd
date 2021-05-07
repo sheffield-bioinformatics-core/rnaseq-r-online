@@ -59,7 +59,7 @@ rownames(sampleinfo) <- sampleinfo$run
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
                                 design <- ~CellType)
-
+dds$Status <- as.factor(dds$Status)
 ```
 
 It would be a good idea to save the results of the pre-processing so we don't have to repeat it every time.
