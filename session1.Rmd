@@ -1,6 +1,7 @@
 ---
-title: "White Rose DTP - Analytics 2"
+title: "Analysis of RNA-seq data in R"
 author: "Module Coordinator Mark Dunning"
+date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output: 
   html_notebook: 
     toc: yes
@@ -107,9 +108,9 @@ The `sampleInfo.txt` in the `meta_data` folder contains basic information about 
 
 ```{r loadSampleInfo}
 # Read the sample information into R
-sampleinfo <- read.delim("meta_data/sampleInfo.txt")
+library(readr)
+sampleinfo <- read_tsv("meta_data/sampleInfo.txt")
 View(sampleinfo)
-rownames(sampleinfo) <- sampleinfo$run
 sampleinfo
 ```
 
@@ -160,7 +161,6 @@ The quant files are simple tab-delimited files that tabulate the counting result
 
 
 ```{r}
-library(readr)
 quants <- read_tsv(quant_files[1])
 head(quants)
 dim(quants)
@@ -207,7 +207,7 @@ library(DESeq2)
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
                                 design <- ~CellType)
-dds
+-dds
 ```
 
 The object contains all the counts along with the metadata for the experiment
@@ -218,6 +218,20 @@ head(assay(dds))
 
 ```{r}
 colData(dds)
+```
+
+Individual columns from the metadata can also be accessed and printed using the `$` notation
+
+```{r}
+dds$Name
+dds$CellType
+```
+
+The metadata columns can also be re-assigned. This useful in this case because we can see that `Status` is not stored as a factor, which could cause problems later on
+
+```{r}
+dds$Status
+dds$Status <- as.factor(dds$Status)
 ```
 
 
@@ -279,10 +293,24 @@ https://www.youtube.com/watch?v=0Jp4gsfOLMs
 
 The [(Principal Components Analysis) PCA](http://setosa.io/ev/principal-component-analysis/) plot, shows the samples in the 2D plane spanned by their first two principal components. A principle components analysis is an example of an unsupervised analysis, where we don’t need to specify the groups. If your experiment is well-controlled and has worked well, what we hope to see is that the greatest sources of variation in the data correspond to the treatments/groups we are interested in. It is also an incredibly useful tool for quality control and checking for outliers.
 
-`DESeq2` has a convenient `plotPCA` function for making the PCA plot, which makes use of the `ggplot2` graphics package.
+`DESeq2` has a convenient `plotPCA` function for making the PCA plot, which makes use of the `ggplot2` graphics package. 
+
 
 ```{r}
 plotPCA(vsd,intgroup="CellType")
+
+```
+
+There is also an option to return the values used in the plot for further exploration and customisation. 
+
+```{r}
+library(ggplot2)
+pca_data <- plotPCA(vsd,intgroup="CellType",returnData = TRUE) %>% 
+  rename(run = name) %>% 
+  left_join(sampleinfo)
+
+  ggplot(pca_data,aes(x = PC1, y = PC2,col=group)) + geom_point()
+
 ```
 
 # Exercise

@@ -53,7 +53,7 @@ tx2gene <- read.csv("tx2gene.csv")
 
 txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
 
-sampleinfo <- read.delim("meta_data/sampleInfo_corrected.txt")
+sampleinfo <- read_tsv("meta_data/sampleInfo_corrected.txt")
 rownames(sampleinfo) <- sampleinfo$run
 
 dds <- DESeqDataSetFromTximport(txi, 
