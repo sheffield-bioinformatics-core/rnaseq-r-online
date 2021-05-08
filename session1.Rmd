@@ -76,6 +76,8 @@ If you want to know more about genome alignment and command-line tools, feel fre
 
 In these sessions will be starting from the count data and getting straight into the analysis.
 
+- [https://salmon.readthedocs.io/en/latest/salmon.html](Documentation for salmon)
+
 We will be following a workflow that uses the `DESeq2` package. An alternative and well-respected workflow is based on the [edgeR and limma packages](https://bioconductor.github.io/BiocWorkshops/rna-seq-analysis-is-easy-as-1-2-3-with-limma-glimma-and-edger.html).
 
 ### Mouse mammary gland dataset
@@ -166,9 +168,9 @@ head(quants)
 dim(quants)
 ```
 
-Our differential expression analysis will be carried-out at the *gene-level*, so we need to perform an additional level of summarisation before we can proceed. Effectively we need to sum the counts for all exons that belong to each gene. The *mappings* from transcript to genes can be obtained by a pre-built database (such as Ensembl). We have provided such data in a csv file that we can read in. See the Appendix if you want to know the details
+Our differential expression analysis will be carried-out at the *gene-level*, so we need to perform an additional level of summarisation before we can proceed. Effectively we need to sum the counts for all exons that belong to each gene. The *mappings* from transcript to genes can be obtained by a pre-built database (such as Ensembl). We have provided such data in a csv file that we can read in (`tx2gene.csv`). See the Appendix if you want to know the details
 
-The `tx2gene.csv` file was missing from early version of the course data zip. If missing you can download it [from here](tx2gene.csv)
+
 
 ```{r}
 tx2gene <- read_csv("tx2gene.csv")
@@ -200,7 +202,7 @@ head(txi$counts)
 We will be using the `DESeq2` library to analyse this dataset. Along with the counts and metadata, a *design* for the experiment also needs to be specified. This will define how the differential expression analysis is carried out, but can be changed at a later stage so for now we will use `CellType` as our factor of interest.
 
 
-The object displays in a similar way to the microarray data we looked at in the previous section.
+Printing the contents of `dds` to the screen gives details of how the data are represented.
 
 ```{r message=FALSE}
 library(DESeq2)
@@ -210,11 +212,12 @@ dds <- DESeqDataSetFromTximport(txi,
 -dds
 ```
 
-The object contains all the counts along with the metadata for the experiment
-
+The object contains all the counts which can be retrieved using the `assay` function. 
 ```{r}
 head(assay(dds))
 ```
+
+Whereas `colData` will display the meta data that has been stored with the object.
 
 ```{r}
 colData(dds)
@@ -227,7 +230,7 @@ dds$Name
 dds$CellType
 ```
 
-The metadata columns can also be re-assigned. This useful in this case because we can see that `Status` is not stored as a factor, which could cause problems later on
+The metadata columns can also be re-assigned. This useful in this case because we can see that `Status` is not stored as a factor, which could cause problems later on when we want to use `Status` in the differential expression.
 
 ```{r}
 dds$Status
@@ -301,7 +304,7 @@ plotPCA(vsd,intgroup="CellType")
 
 ```
 
-There is also an option to return the values used in the plot for further exploration and customisation. 
+There is also an option to return the values used in the plot for further exploration and customisation. Here we join the PCA results to the meta-data (`sampleinfo`) for plotting.
 
 ```{r}
 library(ggplot2)
@@ -322,7 +325,7 @@ pca_data <- plotPCA(vsd,intgroup="CellType",returnData = TRUE) %>%
 - Is there something strange going on with the samples?
 - Identify the two samples that don't appear to be in the right place.
 - What other problems can you see with the metadata?
-
+- Can you label the identify of each sample? Look for help on `geom_text`if you haven't used it before
 </div>
 
 ### Note about batch effects
@@ -335,6 +338,7 @@ Hopefully we have spotted a potential sample swap in the dataset. The mislabeled
 
 Furthermore, the person creating the sample sheet has been inconsistent about the way that values of `CellType` and `Status` have been entered into the metadata. Such errors can be annoying when labeling plots, but have more serious consequences when attempting to fit statistical models to the data.
 
+Here are a set of commands to create an updated sample sheet using the `stringr` package (part of `tidyverse`). We write a new file rather than over-writing the existing one.
 
 ```{r correctSampleSheet}
 library(stringr)

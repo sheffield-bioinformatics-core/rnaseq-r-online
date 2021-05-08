@@ -1,6 +1,7 @@
 ---
-title: "White Rose DTP - Analytics 2"
+title: "Analysis of RNA-seq data in R"
 author: "Module Coordinator Mark Dunning"
+date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output: 
   html_notebook: 
     toc: yes
@@ -26,16 +27,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Now that we are happy that we have normalised the data and that the quality looks good, we can continue to testing for differentially expressed genes. There are a number of packages to analyse RNA-Seq data. Most people use `DESeq2` or `edgeR`. We will use `DESeq2` for the rest of this practical.
 
-First make sure we have all the objects and libraries loaded.
-
-
-
-```{r warning=FALSE,message=FALSE}
-library(DESeq2)
-library(tximport)
-```
-
-
 ### Recap of pre-processing
 
 The previous section walked-through the pre-processing and transformation of the count data. Here, for completeness, we list the minimal steps required to process the data prior to differential expression analysis.
@@ -45,6 +36,7 @@ Note that although we spent some time looking at the quality of our data , these
 ```{r message=FALSE}
 library(tximport)
 library(DESeq2)
+library(readr)
 dirs <- list.files(file.path("salmon_quant/"))
 quant_files <- paste0("salmon_quant/",dirs,"/quant.sf.gz")
 names(quant_files) <- dirs
@@ -54,7 +46,7 @@ tx2gene <- read.csv("tx2gene.csv")
 txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
 
 sampleinfo <- read_tsv("meta_data/sampleInfo_corrected.txt")
-rownames(sampleinfo) <- sampleinfo$run
+
 
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
@@ -71,6 +63,18 @@ saveRDS(dds, file="Robjects/dds.rds")
 
 
 We will be using these raw counts throughout the workshop and transforming them using methods in the `DESeq2` package. If you want to know about alternative methods for count normalisation they are covered on [this page](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).
+
+<div class="information">
+If you have problems running these steps, you can re-load a pre-processed object from the course materials
+
+```{r eval=FALSE}
+dds <- readRDS("Robjects/dds_BACKUP.rds")
+```
+
+
+</div>
+
+
 
 # Differential expression with DESeq2
 
@@ -227,7 +231,7 @@ arrange(results_cellType, padj) %>%
 It is also a good idea to save the results object itself so we can re-use later.
 
 ```{r}
-saveRDS(results_cellType, file="Robjects/results_cellType.rds")
+saveRDS(de_cellType, file="Robjects/de_cellType.rds")
 
 ```
 
