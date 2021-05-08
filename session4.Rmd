@@ -33,9 +33,19 @@ We previously annotated our differential expression results to include gene name
 
 If you are missing this object, you can download using [this link](Robjects/results_cellType_annotated.rds).
 
-```{r}
+```{r eval=FALSE}
 results_annotated <- readRDS("Robjects/results_cellType_annotated.rds")
 ```
+
+<div class="information">
+If you did not save the results from annotation the cellType results, you can use an object from the course materials
+```{r}
+results_annotated <- readRDS("Robjects/results_cellType_annotated_BACKUP.rds")
+```
+
+
+</div>
+
 
 Let's first filter our data to the genes that have statistical significance.
 
@@ -81,7 +91,7 @@ dplyr::count(de_GO, GO) %>%
 ## Exercise
 
 <div class="exercise">
-- Use the `AnnotationDbi::select` function to find the GO terms for all `ENSEMBL` IDs in the `results_annotated` data frame. How many entries are there for `GO:0016020`?
+- Use the `AnnotationDbi::select` function to find `ENSEMBL` for the GO term `GO:0016020`?
 - What proportion of genes for this term were found to be differentially-expressed (also present in `de_genes`)?
 - Is this enough information to decide whether the pathway is altered or not? What information are we not taking into account?
 </div>

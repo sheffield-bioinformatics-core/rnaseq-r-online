@@ -177,7 +177,7 @@ de_cellType
 
 
 
-The results of the analysis are not immediately accessible, but can be obtained using the `results` function. Each row is a particular gene measured in the study (i.e. all genes in the organism being studied) and each column reports some aspect of the differential expression analysis for that gene. Note that **all genes** are reported. At this stage the gene identifiers are not very informative, something we will fix in the next section. 
+The results of the analysis are not immediately accessible, but can be obtained using the `results` function. Each row is a particular gene measured in the study (i.e. all genes in the organism being studied) and each column reports some aspect of the differential expression analysis for that gene. Note that **all genes** are reported. At this stage the gene identifiers are not very informative, something we will fix in the next section. Furthermore, the `results` function displays results in a format which is not compatible with standard data manipulation tools (i.e. `tidyverse`), so we will have to convert.
 
 ```{r}
 results(de_cellType)
@@ -267,7 +267,7 @@ results(de_cellType, contrast=c("CellType","basal","luminal"))
 
 ```
 
-If we change to performing differential expression analysis on the `Status` variable then there are various contrasts that can be made; `pregnant` vs `lactation`, `lactation` vs `virgin` etc. When the `results` function is run, the table that is displayed is for the contrast `virgin vs lactate`. The `resultsNames` function can tell us which other contrasts we can access.
+If we change to performing differential expression analysis on the `Status` variable then there are various contrasts that can be made; `pregnancy` vs `lactation`, `lactation` vs `virgin` etc. When the `results` function is run, the table that is displayed is for the contrast `virgin vs lactation`. The `resultsNames` function can tell us which other contrasts we can access.
 
 For a factor with more than 2 groups, the `contrast` argument can be used to change the output. Lets say we have a factor with groups `A`, `B` and `C`:-
 
@@ -313,7 +313,7 @@ vennDiagram(venn_data)
 ### Exercise
 
 <div class="exercise">
-- Use a venn diagram to visualise the overlap in the genes found to be differentially expressed in the `pregnant vs virgin` and ` lactation vs virgin` contrasts. 
+- Use a venn diagram to visualise the overlap in the genes found to be differentially expressed in the `pregnancy vs virgin` and ` lactation vs virgin` contrasts. 
 - How many genes are in common?
 
 </div>
@@ -379,8 +379,8 @@ write.csv(countMatrix,file="normalized_counts.csv")
 
 <div class="exercise">
 
-- Make a venn diagram for genes with adjusted p-value less than 0.05 in the basal (`de_basal`) and luminal (`de_luminal`) subsets. How many genes overlap?
-- How many differentially expressed genes are found with adjusted p-value less than 0.05 in the *multi-factor* analysis? How does this compare to the number of genes in the venn diagram? What do you think is the best way to analyse these data?
+- Make a venn diagram for genes with adjusted p-value less than 0.05 for the comparison *virgn vs lactation* in the basal (`de_basal`) and luminal (`de_luminal`) subsets. How many genes overlap?
+- How many differentially expressed genes are found with adjusted p-value less than 0.05 for the same contrast in the *multi-factor* analysis? How does this compare to the number of genes in the venn diagram? What do you think is the best way to analyse these data?
 - You may have noticed that some genes in the `DESeq2` output have `NA` values for p-value. Why is this? Check the "Frequently asked questions" section of the DESeq2 manual to find out. Is there an argument in the `results` function to disable this behaviour?
 
 </div>
