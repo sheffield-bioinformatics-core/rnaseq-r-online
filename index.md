@@ -1,5 +1,5 @@
 ---
-title: "White Rose Mechanistic Biology - Analytics 2 (Analysis of RNA-seq data in R)"
+title: "Analysis of RNA-seq data in R"
 author: "Module Coordinator Mark Dunning"
 output: 
   html_document: 
