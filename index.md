@@ -66,7 +66,7 @@ Download and install the version for your OS from: https://rstudio.com/products/
 
 ## 2) Please download and un-zip this file containing the data for the course
 
-[https://drive.google.com/file/d/1Mr-0URRep9Q4AEotLoYIj_YYiu_6CF6V/view?usp=sharing](https://drive.google.com/file/d/1Mr-0URRep9Q4AEotLoYIj_YYiu_6CF6V/view?usp=sharing)
+[rnaseq_data.zip](rnaseq_data.zip)
 
 ## 3) Create a New RStudio project from the directory containing the un-zipped files
 
@@ -74,14 +74,14 @@ Download and install the version for your OS from: https://rstudio.com/products/
 
 Run the code in the R script linked below
 
-[Package installation code](https://drive.google.com/file/d/1y3btIPUElX3OAWxm2heZjxUvEeqEjxnt/view?usp=sharing)
+[Package installation code](install_bioc_packages.R)
 
 ## 5) Check your installation. 
 
 You can check everything is installed by copying and pasting this into the R console
 
 ```
-source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/whiterose_analytics2/master/check_packages.R")
+source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-r-online/main/check_packages.R")
 
 ```
 
