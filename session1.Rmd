@@ -208,8 +208,8 @@ Printing the contents of `dds` to the screen gives details of how the data are r
 library(DESeq2)
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
-                                design <- ~CellType)
--dds
+                                design = ~CellType)
+dds
 ```
 
 The object contains all the counts which can be retrieved using the `assay` function. 
@@ -307,6 +307,7 @@ plotPCA(vsd,intgroup="CellType")
 There is also an option to return the values used in the plot for further exploration and customisation. Here we join the PCA results to the meta-data (`sampleinfo`) for plotting.
 
 ```{r}
+library(dplyr)
 library(ggplot2)
 pca_data <- plotPCA(vsd,intgroup="CellType",returnData = TRUE) %>% 
   rename(run = name) %>% 
