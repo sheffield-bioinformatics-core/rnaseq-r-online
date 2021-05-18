@@ -1,7 +1,6 @@
 ---
-title: "Week 3 Solutions"
+title: "Session 1 Solutions"
 output:
-  word_document: default
   html_notebook: default
 ---
 
