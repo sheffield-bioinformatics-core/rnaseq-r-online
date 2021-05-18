@@ -84,8 +84,9 @@ Error: package or namespace load failed for ‘org.Mm.eg.db’: .onLoad failed i
 A solution is presented in this [forum post](https://community.rstudio.com/t/problem-in-loading-namespace-of-org-hs-eg-db-package-in-rstudio-server-error-operator-is-invalid-for-atomic-vectors/101789)
 
 
-```{r}
+```{r eval=FALSE}
 options(connectionObserver = NULL)
+library(org.Mm.eg.db)
 ```
 
 
@@ -322,8 +323,6 @@ de_status <- readRDS("Robjects/de_status_BACKUP.rds")
 - What does the `scale` argument do in `pheatmap`. Why might it be useful to change the argument?
 
 </div>
-
-
 
 
 
