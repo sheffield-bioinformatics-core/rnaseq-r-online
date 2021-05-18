@@ -1,0 +1,107 @@
+---
+title: "Week 3 Solutions"
+output:
+  word_document: default
+  html_notebook: default
+---
+
+# Identifying the input files
+
+The sequencing reads were quantified using the salmon tool (out of the scope of this course). The output of this tool is kept in the `salmon_quant` directory of the course data folder.
+
+We have to use the `list.files` function to locate all the files. It can be run in "recursive" mode means that it checks all sub-folders.
+
+```{r}
+## see help for list.files
+## recursive checks all sub-folders
+## full.names returns the path in addition to the file name
+
+## dirs contain all the sample names
+dirs <- list.files("salmon_quant/")
+quant_files <- list.files("salmon_quant/",pattern="quant.sf.gz",recursive = TRUE,full.names = TRUE)
+
+## Set nicer names
+names(quant_files) <- dirs
+quant_files
+```
+
+# Importing the files
+
+Two further files are required. 1) the transcript to gene mapping (created previously to save time). 2) the sample information
+
+```{r}
+library(readr)
+tx2gene <- read_csv("tx2gene.csv")
+sampleinfo <- read.delim("meta_data/sampleInfo.txt")
+```
+
+The `tximport` package is first required to import the quantification files, and summarise them to the gene level.
+
+```{r}
+library(tximport)
+
+# ignoreTxVersion is required to make sure the transcript names match up
+
+txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
+```
+
+We can now read these data into `DESeq2`. It has many possible input formats each of which requires a different function. One of the arguments is a data frame containing sample information. The design specifies which contrast we want to analyse in R's modeling format (using the `~` symbol). In the simplest case the design argument can correspond to a column in the sample information that we want to compare.
+
+```{r message=FALSE}
+library(DESeq2)
+dds <- DESeqDataSetFromTximport(txi, 
+                                colData = sampleinfo,
+                                design = ~CellType)
+dds
+```
+
+
+It is useful to check the number of reads obtained for each sample. Low read count could indicate technical issues such as poor RNA quality. The number of reads for each sample can be obtained by summing each column in the `assay(dds)` data frame. These can be plotted as a bar graph.
+
+```{r}
+library(dplyr)
+library(ggplot2)
+mutate(sampleinfo, LibSize = colSums(assay(dds))/1e6) %>% 
+  ggplot(aes(x = Name, y = LibSize)) + geom_col(fill="steelblue") + geom_hline(yintercept = 20,col="red",lty=2)
+```
+
+# Repeat analysis with new sample sheet
+
+After identifying a sample swap, we correct the sample sheet and start the data import again. Only the data frame containing the sample information needs to change.
+
+```{r}
+sampleinfo_corrected <- read_tsv("meta_data/sampleInfo_corrected.txt")
+dds <- DESeqDataSetFromTximport(txi, 
+                                colData = sampleinfo_corrected,
+                                design = ~CellType)
+dds
+```
+
+## Verify sample groups are correct
+
+The PCA plot can be used to verify the new sample groups. A clear separation is seen on the first component between basal and luminal samples (as we would expect).
+
+```{r}
+vsd <- vst(dds)
+plotPCA(vsd,intgroup="CellType")
+```
+
+## ggplot2 version of boxplot
+
+We can also use boxplots to compare the signal distributions. Although the base `boxplot` is easier we can also make the plot using `ggplot2`; giving us more flexibility. The count data have to be transformed into "*long*" format so that sample name and count are available as columns in a data frame.
+
+```{r}
+library(tidyr)
+assay(vsd) %>% 
+  data.frame %>% 
+  tibble::rownames_to_column("Gene") %>% 
+  pivot_longer(-Gene) %>% 
+  ggplot(aes(x = name, y = value)) + geom_boxplot(fill="steelblue") + theme(axis.text.x.bottom = element_text(angle=90))
+  
+```
+The packages used in this analysis are as follows:-
+
+```{r}
+sessionInfo()
+```
+
