@@ -236,7 +236,7 @@ saveRDS(de_cellType, file="Robjects/de_cellType.rds")
 ```
 
 
-### Exercise
+# Exercise
 
 <div class="exercise">
 - Re-run the analysis to find differentially-expressed genes between the developmental stages *virgin* and *lactation*
@@ -310,7 +310,7 @@ vennDiagram(venn_data)
 
 
 
-### Exercise
+# Exercise
 
 <div class="exercise">
 - Use a venn diagram to visualise the overlap in the genes found to be differentially expressed in the `pregnancy vs virgin` and ` lactation vs virgin` contrasts. 
