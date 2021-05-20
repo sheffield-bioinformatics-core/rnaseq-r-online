@@ -1,5 +1,5 @@
 ---
-title: "White Rose DTP - Analytics 2"
+title: "Analysis of RNA-seq data in R"
 author: "Module Coordinator Mark Dunning"
 output: 
   html_notebook: 
