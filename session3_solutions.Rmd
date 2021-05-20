@@ -1,0 +1,100 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+We start by loading our results from the previous week
+
+```{r}
+library(DESeq2)
+library(dplyr)
+## Read the counts that we produced previously
+dds <- readRDS("Robjects/dds.rds")
+results_cellType <- readRDS("Robjects/results_cellType.rds")
+```
+
+To ease our interpretation we can annotate these using pre-built databases
+
+```{r}
+library(org.Mm.eg.db)
+
+  anno <- AnnotationDbi::select(org.Mm.eg.db,keys=results_cellType$ENSEMBL,
+              columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
+              keytype="ENSEMBL") %>% 
+  filter(!duplicated(ENSEMBL))
+results_annotated <- left_join(results_cellType, anno,by="ENSEMBL") %>% 
+  arrange(padj)
+```
+
+
+# Exercise
+
+The `plotCounts` function of `DESeq2` provides a quick diagnostic, but is not particularly attractive. Fortunately it allows us to return the data used in the plot in a format suitable for `ggplot2`
+
+```{r}
+library(ggplot2)
+library(dplyr)
+dds <- readRDS("Robjects/dds.rds")
+
+plotCounts(dds, "ENSMUSG00000027750",intgroup = "CellType",returnData = TRUE) %>% 
+  ggplot(aes(x = CellType, y = count,col=CellType)) + geom_jitter(width=0.1) + scale_y_log10()
+
+```
+
+# Exercise
+
+Producing a heatmap of the top 100 genes in the comparison of virgin vs lactation.
+
+```{r}
+library(pheatmap)
+results_status <- readRDS("Robjects/results_status.rds")
+results_annotated <- left_join(results_status, anno,by="ENSEMBL") %>% 
+  arrange(padj)
+
+## Set the number of genes as a variable so we can easily change the heatmap
+
+N <- 100
+top_genes <- results_annotated$ENSEMBL[1:N]
+sampleInfo <- as.data.frame(colData(dds)[,c("Status","CellType")])
+
+vsd <- vst(dds)
+pheatmap(assay(vsd)[top_genes,],
+         annotation_col = sampleInfo,scale="row")
+```
+
+# Exercise
+
+Modifying the plot for `ENSMUSG00000000381` so that variability in `CellType` and `Status` can be seen
+
+This the basic plot:-
+
+```{r}
+dds$Status <- as.factor(dds$Status)
+plotCounts(dds, "ENSMUSG00000000381",intgroup = "Status")
+```
+
+`plotCounts` allows us to specify multiple groups in the `intgroup` parameter.
+
+```{r}
+plotCounts(dds, "ENSMUSG00000000381",intgroup = c("Status","CellType"),returnData = TRUE) %>% 
+  ggplot(aes(x = Status,y=count,col=CellType)) + geom_jitter(width=0.1) + scale_y_log10()
+
+```
+
+The `org.Dr.eg.db` package can be used to annotate Zebrafish data
+
+```{r eval=FALSE}
+BiocManager::install("org.Dr.eg.db")
+```
+
+```{r}
+library(biomaRt)
+listMarts()
+ensembl=useMart("ENSEMBL_MART_ENSEMBL")
+listDatasets(ensembl) %>% filter(grepl("Zebra",description))
+```
+
+```{r}
+ensembl = useDataset("drerio_gene_ensembl", mart=ensembl)
+```
+

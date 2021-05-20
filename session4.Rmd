@@ -63,7 +63,24 @@ The organism package allows us to map between different identifiers
 library(org.Mm.eg.db)
 ```
 
+<div class="information">
+The following error may be seen loading this library on some versions of RStudio. 
 
+```
+Show in New WindowClear OutputExpand/Collapse Output
+Error: package or namespace load failed for ‘org.Mm.eg.db’: .onLoad failed in loadNamespace() for 'org.Mm.eg.db', details: call: l$contains error: $ operator is invalid for atomic vectors
+```
+
+A solution is presented in this [forum post](https://community.rstudio.com/t/problem-in-loading-namespace-of-org-hs-eg-db-package-in-rstudio-server-error-operator-is-invalid-for-atomic-vectors/101789)
+
+
+```{r eval=FALSE}
+options(connectionObserver = NULL)
+library(org.Mm.eg.db)
+```
+
+
+</div>
 Let's remind ourselves of the mappings available as part of this package.
 
 ```{r}
