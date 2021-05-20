@@ -1,5 +1,5 @@
 ---
-title: "White Rose DTP - Analytics 2"
+title: "Analysis of RNA-seq data in R"
 author: "Module Coordinator Mark Dunning"
 output: 
   html_notebook: 
@@ -186,7 +186,7 @@ enrich_go_tidy
 A dot plot can show us the most enriched pathways, and the size of each.
 
 ```{r}
-dotplot(enrich_go)
+dotplot(enrich_go,showCategory=20)
 ```
 
 Relationships between the identified categories can be found using `emapplot`.
@@ -195,6 +195,21 @@ Relationships between the identified categories can be found using `emapplot`.
 emapplot(enrich_go)
 ```
 
+## Exercise
+
+<div class="exercise">
+- Load your annotated DESeq2 results comparing Virgin to lactation samples
+```{r eval=FALSE}
+## Either
+results_annotated <- readRDS("Robjects/results_status_annotated.rds")
+##OR
+results_annotated_status <- readRDS("Robjects/results_status_annotated_BACKUP.rds")
+
+```
+- Use `clusterProfiler` to identify the most-enriched pathways in the comparison and visualise the results
+- 
+
+</div>
 
 
 # fgsea analysis
