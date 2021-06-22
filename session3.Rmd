@@ -19,196 +19,46 @@ library(dplyr)
 
 # Learning outcomes
 
-- Using annotation databases to map between gene identifers
+
 - Construction and interpretation of common visualisations for RNA-seq
     + scatter plots
     + volcano plots
-    + MA-plots 
     + heatmaps
-- Customisation of plots
+- Identifying enriched and over-represented pathways
 
-We can now have a list of genes ordered according to their evidence for being differentially-expressed. You should have saved a `de_cellType.rds` object in the previous session. 
+We can now have a list of genes ordered according to their evidence for being differentially-expressed. You should have saved a `results_TGF_vs_CTR_annotated.rds` object in the previous session. 
 
-```{r}
+```{r eval=FALSE}
 library(DESeq2)
-de_cellType <- readRDS("Robjects/de_cellType.rds")
-results_cellType <- results(de_cellType) %>% 
-  as.data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL")
+results_tgf  <- readRDS("Robjects/results_TGF_vs_CTR_annotated.rds")
 ```
 
 
 <div class="information">
-If you did not save the results from comparing `CellType`, you can use an object from the course materials
+If you did not save the results from comparing `TGF` to `CTR`, you can use an object from the course materials
 ```{r}
 library(DESeq2)
-de_cellType <- readRDS("Robjects/de_cellType_BACKUP.rds")
-results_cellType <- results(de_cellType) %>% 
-  as.data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL")
-```
+results_tgf <- readRDS("Robjects/results_TGF_vs_CTR_annotated_BACKUP.rds")
 
-
-</div>
-
-We would love to share this list with our collaborators, or search for our favourite gene in the results. However, the results are not very useful in there current form as each row is named according to an *Ensembl* identifier. Whilst gene symbols are problematic and can change over time, they are the names that are most recognisable and make the results easier to navigate.
-
-# Adding annotation to the DESeq2 results
-
-There are a number of ways to add annotation, but we will demonstrate how to do this using the *org.Mm.eg.db* package. This package is one of several *organism-level* packages in Bioconductor that are re-built every 6 months. These packages are listed on the [annotation section](http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData) of the Bioconductor, and are installed in the same way as regular Bioconductor packages. An alternative approach is to use `biomaRt`, an interface to the [BioMart](http://www.biomart.org/) resource. BioMart is much more comprehensive, but the organism packages fit better into the Bioconductor workflow.
-
-
-```{r eval=FALSE}
-### Only execute when you need to install the package
-install.packages("BiocManager")
-BiocManager::install("org.Mm.eg.db")
-# For Human
-BiocManager::install("org.Hs.eg.db")
-```
-
-The packages are larger in size that Bioconductor software pacakges, but essentially they are databases that can be used to make *offline* queries. 
-
-```{r message=FALSE}
-library(org.Mm.eg.db)
-```
-
-
-<div class="information">
-The following error may be seen loading this library on some versions of RStudio. 
-
-```
-Show in New WindowClear OutputExpand/Collapse Output
-Error: package or namespace load failed for ‘org.Mm.eg.db’: .onLoad failed in loadNamespace() for 'org.Mm.eg.db', details: call: l$contains error: $ operator is invalid for atomic vectors
-```
-
-A solution is presented in this [forum post](https://community.rstudio.com/t/problem-in-loading-namespace-of-org-hs-eg-db-package-in-rstudio-server-error-operator-is-invalid-for-atomic-vectors/101789)
-
-
-```{r eval=FALSE}
-options(connectionObserver = NULL)
-library(org.Mm.eg.db)
 ```
 
 
 </div>
 
 
-First we need to decide what information we want. In order to see what we can extract we can run the `columns` function on the annotation database.
+# Further Visualisation
 
-```{r}
-columns(org.Mm.eg.db)
-```
-
-We are going to filter the database by a key or set of keys in order to extract the information we want. Valid names for the key can be retrieved with the `keytypes` function.
-
-```{r}
-keytypes(org.Mm.eg.db)
-```
-
-We should see `ENSEMBL`, which is the type of key we are going to use in this case. If we are unsure what values are acceptable for the key, we can check what keys are valid with `keys`
-
-```{r}
-keys(org.Mm.eg.db, keytype="ENSEMBL")[1:10]
-```
-
-
-
-For the top gene in our analysis the call to the function would be:-
-
-```{r eval=FALSE}
-select(org.Mm.eg.db, keys="ENSMUSG00000027750",
-       keytype = "ENSEMBL",columns=c("SYMBOL","GENENAME")
-)
-```
-
-Unfortunately, the authors of `dplyr` and `AnnotationDbi` have both decided to use the name `select` in their packages. To avoid confusion and errors, the following code is sometimes used:-
-
-```{r}
-AnnotationDbi::select(org.Mm.eg.db, keys="ENSMUSG00000000381",keytype = "ENSEMBL",columns=c("SYMBOL","GENENAME"))
-```
-
-
-To annotate our results, we definitely want gene symbols and perhaps the full gene name. Let's build up our annotation information into a new data frame using the `select` function.
-
-```{r}
-anno <- AnnotationDbi::select(org.Mm.eg.db,keys=results_cellType$ENSEMBL,
-              columns=c("SYMBOL","GENENAME"),
-              keytype="ENSEMBL")
-# Have a look at the annotation
-head(anno)
-```
-
-However, we have a problem that the resulting data frame has more rows than our results table. This is due to the *one-to-many* relationships that often occur when mapping between various identifiers.
-
-```{r}
-dim(anno)
-dim(results_cellType)
-```
-
-Such duplicated entries can be identified using the `duplicated` function. Fortunately, there are not too many so hopefully we won't lose too much information if we discard the entries that are duplicated. The first occurrence of the duplicated ID will still be included in the table.
-
-```{r}
-  anno <- AnnotationDbi::select(org.Mm.eg.db,keys=results_cellType$ENSEMBL,
-              columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
-              keytype="ENSEMBL") %>% 
-  filter(!duplicated(ENSEMBL))
-dim(anno)
-```
-
-
-We can bind in the annotation information to the `results` data frame. 
-
-```{r}
-results_annotated <- left_join(results_cellType, anno,by="ENSEMBL") %>% 
-  arrange(padj)
-head(results_annotated)
-```
-
-
-We can save the results table using the `write.csv` function, which writes the results out to a csv file that you can open in excel.
-
-```{r}
-write.csv(results_annotated,file="cellType_DESeq_annotated.csv",row.names=FALSE)
-saveRDS(results_annotated, file="Robjects/results_cellType_annotated.rds")
-```
-
-
-# Visualisation
-
-Now we have annotated our results, we can start to explore some common visualisation techniques.
-
-A useful sanity check is to examine the counts for a single gene across biological groups. A simple function for making this plot is `plotCounts`, which normalizes counts by sequencing depth and adds a "pseudocount" of 1/2 to allow for log scale plotting. The counts are grouped by the variables in  `intgroup`, where more than one variable can be specified. Here we specify the gene which had the smallest p-value from the results table created above. You can select the gene to plot by rowname or by numeric index:-
-
-As the results table no longer contains read counts, we will have to load these from a previous object.
-
-```{r}
-library(DESeq2)
-## Read the counts that we produced previously
-dds <- readRDS("Robjects/dds.rds")
-
-plotCounts(dds, "ENSMUSG00000027750",intgroup = "CellType")
-```
-
-
-## Exercise
-
-<div class="exercise">
-
-- Use `plotCounts` with the option `returnData=TRUE`  to get a data frame containing the counts of `ENSMUSG00000027750` in the different cell types. Visualise these data using `ggplot2` and colour the samples appropriately
-    + HINT: To get the counts on the same scale as displayed by the plotCounts function you will need to add adjust the scale on the y-axis 
-</div>
-
-
+Now we have annotated our results, we can start to explore some common visualisation techniques. In the process we will hope to gain more insights into our results
 
 ## The Volcano Plot
 
 A common plot for displaying the results of a differential expression analysis is a *volcano plot*. It is a *scatter plot* that shows statistical significance and the magnitude of difference between conditions. They are used to identify which genes are the most significant and are also changing by the most amount.
 
-The data we need for the plot is contained in our `results_annotated` data frame. This basic plot displays a point for every gene, but does not take advantage of some of the other columns in the data frame.
+The data we need for the plot is contained in our `results_tgf` data frame. This basic plot displays a point for every gene, but does not take advantage of some of the other columns in the data frame.
 
 ```{r}
 library(ggplot2)
-results_annotated %>% 
+results_tgf %>% 
   ggplot(aes(x = log2FoldChange, y = -log10(padj))) + geom_point()
 ```
 
@@ -216,7 +66,7 @@ results_annotated %>%
 One modification is to colour the points according to whether each gene is significant in the analysis. The indicator of significance can be a new column in the data frame that we create on-the-fly using the pipe operator.
 
 ```{r}
-results_annotated %>% 
+results_tgf %>% 
   mutate(Significant = padj < 0.05 & abs(log2FoldChange) > 2) %>% 
   ggplot(aes(x = log2FoldChange, y = -log10(padj), col=Significant)) + geom_point()
 ```
@@ -226,7 +76,7 @@ We can also add the gene names to the plot. This should be straightforward as gg
 
 ```{r}
 ## Not a good idea to run this!!
-results_annotated %>% 
+results_tgf %>% 
   ggplot(aes(x = log2FoldChange, y = -log10(padj), label=SYMBOL)) + geom_point() + geom_text()
 ```
 
@@ -237,8 +87,8 @@ For clarity, we also make the points slightly transparent and use a different co
 
 ```{r}
 N <- 10
-top_genes <- results_annotated$ENSEMBL[1:N]
-results_annotated %>% 
+top_genes <- results_tgf$ENSEMBL[1:N]
+results_tgf %>% 
   mutate(Label = ifelse(ENSEMBL %in% top_genes, SYMBOL, "")) %>%  
   ggplot(aes(x = log2FoldChange, y = -log10(padj), label=Label)) + geom_point(alpha=0.4) + geom_text(col="blue")
 ```
@@ -248,9 +98,27 @@ Finally, a slightly better positioning of text is given by the `ggrepel` package
 ```{r}
 if(!require(ggrepel)) install.packages("ggrepel")
 
-results_annotated %>% 
+results_tgf %>% 
   mutate(Label = ifelse(ENSEMBL %in% top_genes, SYMBOL, "")) %>%  
   ggplot(aes(x = log2FoldChange, y = -log10(padj), label=Label)) + geom_point(alpha=0.4) + geom_text_repel(col="blue")
+```
+
+The labeling of genes on the plot is not restricted to the most significant genes. We could use a similar approach to label any set of genes that we are interested in.
+
+For instance, we could hypothesise that Extra-Cellular Matrix (ECM) genes play are important for the transformation in cells treated with TGF. We could use the volcano plot to demonstrate whether genes belonging to this pathway show evidence for being differentially-expressed
+
+
+# Exercise
+
+<div class="exercise">
+
+- Which genes belong to the ECM pathway (GO:0030198)? Get their `ENSEMBL` IDs using the `AnnotationDbi::select` function
+- Produce a volcano plot (as above) with points coloured according to whether a gene belongs to the ECM pathway
+  + there will be too many genes in the pathway to be able to label their names
+</div>
+
+```{r}
+
 ```
 
 
@@ -267,9 +135,14 @@ The counts we are visualising are the *variance-stablised* counts, which are mor
 Although `ggplot2` has a `geom_tile` function to make heatmaps, specialised packages such as `pheatmaps` offer more functionality such as clustering the samples.
 
 ```{r}
+dds <- readRDS("Robjects/dds_BACKUP.rds")
+```
+
+
+```{r}
 # pheatmap is a specialised package to make heatmaps
 library(pheatmap)
-top_genes <- results_annotated$ENSEMBL[1:10]
+top_genes <- results_tgf$ENSEMBL[1:10]
 vsd <- vst(dds)
 pheatmap(assay(vsd)[top_genes,])
 ```
@@ -277,10 +150,11 @@ pheatmap(assay(vsd)[top_genes,])
 The heatmap is more informative if we add colours underneath the sample dendrogram to indicate which sample group each sample belongs to. This we can do by creating a data frame containing metadata for each of the samples in our dataset. With the `DESeq2` workflow we have already created such a data frame. We have to make sure the the rownames of the data frame are the same as the column names of the counts matrix.
 
 ```{r}
-sampleInfo <- as.data.frame(colData(dds)[,c("Status","CellType")])
+sampleInfo <- as.data.frame(colData(dds)[,c("condition","Treated")])
 
 pheatmap(assay(vsd)[top_genes,],
-         annotation_col = sampleInfo)
+         annotation_col = sampleInfo,
+         scale="row")
 ```
 
 Any plot we create in RStudio can be saved as a png or pdf file. We use the `png` or `pdf` function to create a file for the plot to be saved into and run the rest of the code as normal. The plot does not get displayed in RStudio, but printed to the specified file. 
@@ -295,11 +169,21 @@ pheatmap(assay(vsd)[top_genes,],
 There are many arguments to explore in `pheatmap`. For example, we might want to use a specific order to the rows and columns rather than using clustering. A useful option is to specific our own labels for the rows (genes). The default is to use the rownames of the count matrix. In our cases these are Ensembl IDs and not easy to interpret.
 
 ```{r}
-gene_labels <- results_annotated$SYMBOL[1:N]
+gene_labels <- results_tgf$SYMBOL[1:N]
 
 pheatmap(assay(vsd)[top_genes,],
          annotation_col = sampleInfo,
-         labels_row = gene_labels)
+         labels_row = gene_labels,
+         scale="row")
+```
+
+Given the nature of how the genes were selected for the heatmap, we shouldn't be surprised by the good separation that it demonstrates.
+
+Instead, an un-biased approach can be used where we choose genes based on their variability across the whole dataset. The variability of a gene can be calculated using the convenient `rowSds` function applied to the variance-stabilised counts in the `vsd` object. However, some genes have very low expression and were not tested by `DESeq2`. We can exclude these from the visualisation
+
+```{r}
+res_with_var <- mutate(results_tgf, GeneVar = rowSds(assay(vsd))) %>% 
+  filter(!is.na(padj))
 ```
 
 
@@ -307,26 +191,175 @@ pheatmap(assay(vsd)[top_genes,],
 
 <div class="exercise">
 
-- Load your `de_status.rds` file. If you didn't create this, there is a backup object provided 
-```{r eval=FALSE}
-## Either
-de_status <- readRDS("Robjects/de_status.rds")
-##OR
-de_status <- readRDS("Robjects/de_status_BACKUP.rds")
-
-```
-
-- Repeat the same heatmap as above, but for the top 100 most differentially-expressed genes **between lactation and virgin**
-    + Re-arrange by adjusted p-value and join with the annotation table from `org.Mm.eg.db`
-    + identify the top 100 genes by p-value and create the heatmap
-- Save the plot to a pdf file
-- What does the `scale` argument do in `pheatmap`. Why might it be useful to change the argument?
+- Produce a heatmap of the top 100 most-variable genes (as measure by their standard deviation across the dataset)
+  + First, re-arrange the table `res_with_var` from above by decreasing `GeneVar`
+  + Identify the `ENSEMBL` IDs for the first 100 rows. The `slice` function from `dplyr` might be useful here
+  + Use these 100 IDs in the heatmap instead of the most significant genes that we used previously
 
 </div>
 
+# Pathways analysis
+
+In this section we move towards discovering if our results are ***biologically significant***. Are the genes that we have picked statistical flukes, or are there some commonalities. 
+
+There are two different approaches one might use, and we will cover the theory behind both.
+
+## Threshold-based Gene Set Testing
+
+ For a particular pathway we need to calculate how many genes were identified as differentially-expressed and compare to *how many we would be expect by chance*. Or in other words, if we repeatedly generated a list of differentially-expressed genes at random how many genes from this pathway would be expect to see.
+
+For the ECM pathway we can extract all genes as follows:-
+
+```{r}
+## The pull function from dplyr is used to extract a particular column
+library(org.Hs.eg.db)
+pathway_genes <- AnnotationDbi::select(org.Hs.eg.db,
+                                       keys = "GO:0030198",
+                                       keytype = "GO",
+                                       columns="ENSEMBL") %>% pull(ENSEMBL)
+```
+
+We can then annotate each gene in our results according to whether it belongs to this pathway, and whether it is differentially-expressed.
+
+```{r}
+go_table <- mutate(results_tgf, 
+                   inPathway = ENSEMBL %in% pathway_genes,
+                   isDE = padj < 0.05 & abs(log2FoldChange) > 1)
+go_table
+```
+
+Cross-tabulating the two new columns gives a basis for a statistical test
+
+```{r}
+table(go_table$inPathway, go_table$isDE)
+```
+
+The Fisher's exact test or chi-squared test (as seen here) can then be used
+
+```{r}
+chisq.test(table(go_table$inPathway, go_table$isDE))
+```
+    
+In reality it would be impractical to test all possible pathways in this manner, so there are a number of Bioconductor packages that automate the process
 
 
-# Annotation with the biomaRt resource
+### Analysis with clusterProfiler
+
+`clusterProfiler` is a Bioconductor package for over-representation analysis. It's main advantage is that it provides some nice visualisation methods.
+
+The main function is `enrichGO` which requires the IDs of genes found to be differentially-expressed (`sigGenes`) and the IDs of *all* genes in the dataset (`universe`). It uses the `org.Hs.eg.db` package to map between gene names and biological pathways.
+
+```{r message=FALSE, warning=FALSE}
+library(clusterProfiler)
+universe <- results_tgf %>% pull(ENSEMBL)
+sigGenes <- results_tgf %>% 
+  filter(padj < 0.05, !is.na(ENSEMBL)) %>% pull(ENSEMBL)
+
+enrich_go <- enrichGO(
+  gene= sigGenes,
+  OrgDb = org.Hs.eg.db,
+  keyType = "ENSEMBL",
+  ont = "BP",
+  universe = universe,
+  qvalueCutoff = 0.05,
+  readable=TRUE
+)
+
+```
+
+The result of `enrichGo` can be turned into a data frame for easier interpretation.
+
+```{r}
+enrich_go %>% data.frame
+```
+
+A dot plot can show us the most enriched pathways, and the size of each.
+
+```{r}
+dotplot(enrich_go,showCategory=20)
+```
+
+Relationships between the identified categories can be found using `emapplot`.
+
+```{r}
+enrich_go <- enrichplot::pairwise_termsim(enrich_go)
+emapplot(enrich_go)
+```
+
+Overlaps between gene sets can also be visualised using an "Upset plot" - an alternative to a venn diagram.
+
+```{r}
+enrichplot::upsetplot(enrich_go)
+```
+
+## Gene set enrichment analysis (GSEA)
+
+
+
+An appealing feature of the **GSEA** method is that it does not require us to impose arbitrary cut-offs on the dataset to decide what is differentially-expressed or not. The steps in producing the input required for GSEA are i) retrieving the ranked statistics ii) naming each one according to **Entrez ID**.
+
+The `clusterProfiler` package also includes an implementation of the GSEA algorithm, and the function works in much the same way as `enrichGO` from above.
+
+
+```{r}
+
+ranked_genes <- results_tgf %>% 
+  arrange(desc(stat)) %>% 
+  filter(!is.na(stat))
+  
+geneList <- pull(ranked_genes, stat)
+names(geneList) <- pull(ranked_genes, ENSEMBL)
+  
+gse_GO  <- gseGO(geneList = geneList,
+        OrgDb = org.Hs.eg.db,
+        ont = "BP",keyType = "ENSEMBL")
+
+```
+
+```{r}
+gse_GO %>% as.data.frame
+```
+
+An overview of the results can be provided by a "ridge plot". This allows comparison of the test statistics for each of the top enriched pathways. 
+
+```{r}
+ridgeplot(gse_GO)
+```
+An upset plot can still be produced, but this time the distribution of statistics for overlapping categories can be produced.
+
+```{r}
+enrichplot::upsetplot(gse_GO)
+```
+
+The results confirm that the ECM pathway has many differentially-expressed genes (more than we would expect by chance). Moreover, there is a tendancy for these genes to be up-regulated; as indicated by the high positive enrichment score. Another way to visualise the GSEA results, that is typically produced from the GSEA java app, is the so-called enrichment plot. 
+
+```{r}
+gseaplot(gse_GO,geneSetID = "GO:0030198")
+```
+The enrichment plot for a gene set with a high negative enrichment score reveals a different pattern.
+
+```{r}
+gseaplot(gse_GO,geneSetID = "GO:0002283")
+```
+
+# Exercise
+
+<div class="exercise">
+
+- In addition to enriched GO terms, `clusterProfiler` can also find enriched [KEGG](https://www.genome.jp/kegg/) terms using the `enrichKEGG` function. There are a couple of changes that are required from `enrichGO`
+  - `ENTREZID` have to be used as the identifer type
+  - the user must input an appropriate [organism code](https://www.genome.jp/kegg/catalog/org_list.html). The code for humans is `hsa`.
+- Use the `enrichKEGG` function to identify enriched KEGG terms in the analysis.
+- (Optional) If you have time, use the gseKEGG to perform GSEA using KEGG terms.
+
+</div>
+
+```{r}
+
+```
+
+
+# Appendix: Annotation with the biomaRt resource
 
 The Bioconductor package have the convenience of being able to make queries offline. However, they are only available for certain organisms. If your organism does not have an `org.XX.eg.db` package listed on the Bioconductor annotation page (http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData), an alternative is to use biomaRt which provides an interface to the popular biomart annotation resource. 
 
@@ -336,15 +369,15 @@ The first step is to find the name of a database that you want to connect to.
 library(biomaRt)
 listMarts()
 ensembl=useMart("ENSEMBL_MART_ENSEMBL")
-# list the available datasets (species). Replace mouse with the name of your organism
-listDatasets(ensembl) %>% filter(grepl("Mouse",description))
+# list the available datasets (species). Replace human with the name of your organism
+listDatasets(ensembl) %>% filter(grepl("Human",description))
 ```
 
 ```{r}
-ensembl = useDataset("mmusculus_gene_ensembl", mart=ensembl)
+ensembl = useDataset("hsapiens_gene_ensembl", mart=ensembl)
 ```
 
-Queries to `biomaRt` are constructed in a similar way to the queries we performed with the `org.Mm.eg.db` package. Instead of `keys` we have `filters`, and instead of `columns` we have attributes. The list of acceptable values is much more comprehensive that for the `org.Mm.eg.db` package.
+Queries to `biomaRt` are constructed in a similar way to the queries we performed with the `org.Hs.eg.db` package. Instead of `keys` we have `filters`, and instead of `columns` we have attributes. The list of acceptable values is much more comprehensive that for the `org.Hs.eg.db` package.
 
 ```{r}
 listFilters(ensembl) %>% 
@@ -368,16 +401,4 @@ getBM(attributes = attributeNames,
       mart=ensembl)
 ```
 
-# Exercise for next time
 
-<div class="exercise">
-- When visualising the expression of `ENSMUSG00000000381` we can also observe an effect of `CellType` on the expression level. 
-```{r}
-dds$Status <- as.factor(dds$Status)
-plotCounts(dds, "ENSMUSG00000000381",intgroup = "Status")
-```
-- Modify the code producing the plot so that the points on the plot can be identified by `CellType` and `Status` (e.g using different colours and shapes or a facet). You will need to look at the options for `plotCounts` and how to specify multiple groups in `intgroup`.
-- Suppose we have a zebrafish dataset rather than human or mouse. What `org...db` package would you use in Bioconductor? How would you connect to the zebrafish database in biomaRt?
-
-
-</div>

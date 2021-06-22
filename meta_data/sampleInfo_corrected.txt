@@ -1,13 +1,10 @@
-"run"	"Name"	"CellType"	"Status"
-"SRR1552444"	"MCL1-LA"	"luminal"	"virgin"
-"SRR1552445"	"MCL1-LB"	"luminal"	"virgin"
-"SRR1552446"	"MCL1-LC"	"luminal"	"pregnancy"
-"SRR1552447"	"MCL1-LD"	"luminal"	"pregnancy"
-"SRR1552448"	"MCL1-LE"	"luminal"	"lactation"
-"SRR1552449"	"MCL1-LF"	"luminal"	"lactation"
-"SRR1552450"	"MCL1-DG"	"basal"	"virgin"
-"SRR1552451"	"MCL1-DH"	"basal"	"virgin"
-"SRR1552452"	"MCL1-DI"	"basal"	"pregnancy"
-"SRR1552453"	"MCL1-DJ"	"basal"	"pregnancy"
-"SRR1552454"	"MCL1-DK"	"basal"	"lactation"
-"SRR1552455"	"MCL1-DL"	"basal"	"lactation"
+Run	condition	Name	Replicate	Treated
+1_CTR_BC_2	CTR	CTR_1	1	N
+2_TGF_BC_4	TGF	TGF_1	1	Y
+3_IR_BC_5	IR	IR_1	1	Y
+4_CTR_BC_6	CTR	CTR_2	2	N
+5_TGF_BC_7	TGF	TGF_2	2	Y
+6_IR_BC_12	IR	IR_2	2	Y
+7_CTR_BC_13	CTR	CTR_3	3	N
+8_TGF_BC_14	TGF	TGF_3	3	Y
+9_IR_BC_15	IR	IR_3	3	Y

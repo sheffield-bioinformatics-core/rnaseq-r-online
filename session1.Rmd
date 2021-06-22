@@ -82,11 +82,11 @@ We will be following a workflow that uses the `DESeq2` package. An alternative a
 
 ### Mouse mammary gland dataset
 
-The data for this tutorial comes from a Nature Cell Biology paper, [*EGF-mediated induction of Mcl-1 at the switch to lactation is essential for alveolar cell survival*](http://www.ncbi.nlm.nih.gov/pubmed/25730472). 
+The data for this tutorial comes from the paper, [*Induction of fibroblast senescence generates a non-fibrogenic myofibroblast phenotype that differentially impacts on cancer prognosis.*](http://europepmc.org/article/MED/27992856). 
 
-This study examines the expression profiles of basal stem-cell enriched cells (B) and committed luminal cells (L) in the mammary gland of virgin, pregnant and lactating mice. Six groups are present, with one for each combination of cell type and mouse status. Each group contains two biological replicates.
+> Cancer associated fibroblasts characterized by an myofibroblastic phenotype play a major role in the tumour microenvironment, being associated with poor prognosis. We found that this cell population is made in part by senescent fibroblasts in vivo. As senescent fibroblasts and myofibroblasts have been shown to share similar tumour promoting functions in vitro we compared the transcriptosomes of these two fibroblast types and performed RNA-seq of human foetal foreskin fibroblasts 2 (HFFF2) treated with 2ng/ml TGF-beta-1 to induce myofibroblast differentiation or 10Gy gamma irradiation to induce senescence. We isolated RNA 7 days upon this treatments changing the medium 3 days before the RNA extraction.
 
-The sequencing reads for this experiment were uploaded to the [Sequencing Read Archive (SRA)](https://www.ncbi.nlm.nih.gov/sra?term=SRP045534) and processed using `salmon`. However, the workflow we will describe can be applied to other sources of count data.
+The sequencing reads for this experiment were uploaded to ArrayExpress [Sequencing Read Archive (SRA)](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-3101/) and processed using `salmon`. However, the workflow we will describe can be applied to other sources of count data.
 
 # Obtaining the metadata
 
@@ -111,7 +111,7 @@ The `sampleInfo.txt` in the `meta_data` folder contains basic information about 
 ```{r loadSampleInfo}
 # Read the sample information into R
 library(readr)
-sampleinfo <- read_tsv("meta_data/sampleInfo.txt")
+sampleinfo <- read_csv("meta_data/sampleInfo.csv")
 View(sampleinfo)
 sampleinfo
 ```
@@ -119,6 +119,9 @@ sampleinfo
 
 
 # Reading in the count data
+
+
+## Output from salmon
 
 Eventually we will be using the DESeq2 Bioconductor package for differential expression analysis. The precise method of importing your count data into DESeq2 depends on the workflow used to generate the counts. The [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data) gives many different use-cases. For instance, if you have your counts in a single file (e.g. if following our Galaxy tutorials) you can follow [this example](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#countmat)
 
@@ -144,7 +147,7 @@ So we will need to define the files that we want to import and a transcript mapp
 
 `tximport` is able to import counts produced by different software, and different workflows are described for each in the [tximport vignette](https://bioconductor.org/packages/devel/bioc/vignettes/tximport/inst/doc/tximport.html).
 
-## Identifying the files
+### Identifying the files
 
 The samples from this study have been *quantified* using `salmon`, which is beyond the scope of this workshop. Note that the salmon analysis produced many other files (e.g. log files), but we will only need the `quant.sf.gz` files for analysis.
 
@@ -155,12 +158,15 @@ dirs <- list.files("salmon_quant/")
 quant_files <- list.files("salmon_quant/",pattern="quant.sf.gz",recursive = TRUE,full.names = TRUE)
 names(quant_files) <- dirs
 quant_files
+
+
 ```
 
 ### Inspecting the salmon output
 
 The quant files are simple tab-delimited files that tabulate the counting results for each *transcript* in our chosen organism. Although we will use a specialised Bioconductor package (`tximport`) to import the counts for entire dataset into R, we can inspect the first of the files using the standard `read_tsv` function from the `readr` package.
 
+**This is not usually part of the analysis workflow, but we include it here so we can understand what the raw data are**
 
 ```{r}
 quants <- read_tsv(quant_files[1])
@@ -193,13 +199,11 @@ The raw counts can be found using `txi$counts`
 ```{r}
 head(txi$counts)
 ```
-
-
-
+`
 
 # Quality control of the imported counts
 
-We will be using the `DESeq2` library to analyse this dataset. Along with the counts and metadata, a *design* for the experiment also needs to be specified. This will define how the differential expression analysis is carried out, but can be changed at a later stage so for now we will use `CellType` as our factor of interest.
+We will be using the `DESeq2` library to analyse this dataset. Along with the counts and metadata, a *design* for the experiment also needs to be specified. This will define how the differential expression analysis is carried out, but can be changed at a later stage so for now we will use `Treated` as our factor of interest.
 
 
 Printing the contents of `dds` to the screen gives details of how the data are represented.
@@ -208,9 +212,10 @@ Printing the contents of `dds` to the screen gives details of how the data are r
 library(DESeq2)
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
-                                design = ~CellType)
+                                design = ~Treated)
 dds
 ```
+
 
 The object contains all the counts which can be retrieved using the `assay` function. 
 ```{r}
@@ -226,15 +231,14 @@ colData(dds)
 Individual columns from the metadata can also be accessed and printed using the `$` notation
 
 ```{r}
-dds$Name
-dds$CellType
+dds$condition
+dds$Treated
 ```
 
-The metadata columns can also be re-assigned. This useful in this case because we can see that `Status` is not stored as a factor, which could cause problems later on when we want to use `Status` in the differential expression.
+The metadata columns can also be re-assigned. This useful in this case because we can see that `condition` is not stored as a factor, which could cause problems later on when we want to use `condition` in the differential expression.
 
 ```{r}
-dds$Status
-dds$Status <- as.factor(dds$Status)
+dds$condition <- as.factor(dds$condition)
 ```
 
 
@@ -300,7 +304,7 @@ The [(Principal Components Analysis) PCA](http://setosa.io/ev/principal-componen
 
 
 ```{r}
-plotPCA(vsd,intgroup="CellType")
+plotPCA(vsd,intgroup="condition")
 
 ```
 
@@ -309,8 +313,8 @@ There is also an option to return the values used in the plot for further explor
 ```{r}
 library(dplyr)
 library(ggplot2)
-pca_data <- plotPCA(vsd,intgroup="CellType",returnData = TRUE) %>% 
-  rename(run = name) %>% 
+pca_data <- plotPCA(vsd,intgroup="Treated",returnData = TRUE) %>% 
+  dplyr::rename(Run = name) %>% 
   left_join(sampleinfo)
 
   ggplot(pca_data,aes(x = PC1, y = PC2,col=group)) + geom_point()
@@ -322,10 +326,8 @@ pca_data <- plotPCA(vsd,intgroup="CellType",returnData = TRUE) %>%
 <div class="exercise">
 
 - Is the `plotPCA` plot based on all genes in the dataset? How can we change how many genes are used for the PCA analysis? Does this significantly change the plot? (HINT: check the documentation for the `plotPCA` function.)
-- Change the `intgroup` parameter so that both CellType and Status are used for grouping. (See the documentation again)
-- Is there something strange going on with the samples?
-- Identify the two samples that don't appear to be in the right place.
-- What other problems can you see with the metadata?
+- Verify that the samples are separated based on the type of treatment applied
+- What problems can you see with the metadata?
 - Can you label the identify of each sample? Look for help on `geom_text`if you haven't used it before
 </div>
 
@@ -333,11 +335,25 @@ pca_data <- plotPCA(vsd,intgroup="CellType",returnData = TRUE) %>%
 
 In our unsupervised analysis we should see that the main source of variation is due to biological effects, and not technical variation such as when the libraries were sequenced. If we do observe high technical variation in our data, it is not a complete disaster provided that we have designed our experiment properly. In particular the [sva Bioconductor package](https://bioconductor.org/packages/release/bioc/vignettes/sva/inst/doc/sva.pdf) can correct for batch effects provided that representatives of the groups of interest appear in each batch. Alternatively, the batch or confounding factor may be incorporated into the differential expression analysis.
 
+Below is an example of a PCA that might potentially worrying:-
+
+
+```{r echo=FALSE}
+library(ggrepel)
+plotPCA(vsd,intgroup="Treated",returnData = TRUE) %>% 
+  dplyr::rename(Run = name) %>% 
+  left_join(sampleinfo) %>% 
+  dplyr::rename(Batch = condition) %>% 
+  dplyr::mutate(condition = Replicate) %>% 
+  mutate(Batch = forcats::fct_recode(Batch, "1" = "CTR", "2" = "TGF","3"= "IR")) %>% 
+  mutate(condition = forcats::fct_recode(as.factor(condition), "CTR"="1", "TGF"="2","IR"="3")) %>% 
+  ggplot(aes(x = PC1, y = PC2,col=Batch,label=condition)) + geom_point() + geom_text_repel(col="black") + ggtitle("Worrying PCA Example")
+```
+
+
 ### Correcting the sample information
 
-Hopefully we have spotted a potential sample swap in the dataset. The mislabeled samples are MCL1.DH, which is labeled as luminal but should be basal, and MCL1.LA, which is labeled as basal but should be luminal.  Such errors are not uncommon when handling large numbers of samples and sometimes we need to go back to the lab books and verify that a swap has been made. *If there is no supporting evidence for a swap then it can be safer to exclude the samples*. 
-
-Furthermore, the person creating the sample sheet has been inconsistent about the way that values of `CellType` and `Status` have been entered into the metadata. Such errors can be annoying when labeling plots, but have more serious consequences when attempting to fit statistical models to the data.
+The person creating the sample sheet has been inconsistent about the way that values of `Treated` have been entered into the metadata. Such errors can be annoying when labeling plots, but have more serious consequences when attempting to fit statistical models to the data.
 
 Here are a set of commands to create an updated sample sheet using the `stringr` package (part of `tidyverse`). We write a new file rather than over-writing the existing one.
 
@@ -345,12 +361,68 @@ Here are a set of commands to create an updated sample sheet using the `stringr`
 library(stringr)
 library(dplyr)
 sampleinfo %>% 
-mutate(CellType = str_to_lower(CellType)) %>% 
-mutate(Status = str_trim(Status)) %>% 
-mutate(CellType = ifelse(Name == "MCL1-DH","basal",CellType)) %>% 
-mutate(CellType= ifelse(Name == "MCL1-LA","luminal",CellType)) %>% 
-write.table(file="meta_data/sampleInfo_corrected.txt",sep="\t",row.names = FALSE)
+mutate(condition = str_to_upper(condition)) %>% 
+write_tsv(file="meta_data/sampleInfo_corrected.txt")
 ```
+
+
+# Count matrix input
+
+Another common workflow is where the raw counts are presented in the form of a single file with one column for each sample and one row for each gene.
+
+Such a file is provided in the `raw_counts` folder.
+
+```{r}
+count_file <- "raw_counts/raw_counts_matrix.tsv"
+counts <- read.delim(count_file)
+head(counts)
+
+```
+
+The function `DESeqDatasetFromMatrix` can now be used to create the DESeq2 object. From the help (`?DESeqDatasetFromMatrix`) we can see that it requires similar arguments to before; a count object, sample information and a design. However, an error is printed with the code below:-
+
+```{r eval=FALSE}
+dds_from_mat <- DESeqDataSetFromMatrix(counts, 
+                                  colData = sampleinfo, 
+                                  design = ~Treated)
+```
+
+```
+Error in DESeqDataSetFromMatrix(counts, colData = sampleinfo, design = ~Treated) : ncol(countData) == nrow(colData) is not TRUE
+```
+
+The error message is telling using that the number of columns in our count data is not the same as the number of rows in our sample information. This is indeed the case.
+
+```{r}
+ncol(counts)
+nrow(sampleinfo)
+```
+
+A workaround is to modify our counts so that the gene names appear as *row names*, and then remove the gene names column. We can use the `[]` approach from base R to extract and remove columns.
+
+```{r}
+rownames(counts) <- counts[,1]
+counts <- counts[,-1]
+
+dds_from_mat <- DESeqDataSetFromMatrix(counts, 
+                                  colData = sampleinfo, 
+                                  design = ~Treated)
+dds_from_mat
+```
+
+However, there is an simpler approach in this case. The function includes a `tidy` argument which can be set to `TRUE` in the situation where gene names appear as the first column.
+
+```{r}
+counts <- read.delim(count_file)
+dds_from_mat <- DESeqDataSetFromMatrix(counts, 
+                                  colData = sampleinfo, 
+                                  design = ~Treated,
+                                  tidy=TRUE)
+dds_from_mat
+
+```
+
+
 
 # Exercise for next time
 
@@ -358,16 +430,8 @@ write.table(file="meta_data/sampleInfo_corrected.txt",sep="\t",row.names = FALSE
 
 - Re-create the `DESeqDataset` object to include the corrected sample information
 - Re-run the plotPCA function on the new data and verify that the sample groups now look correct
-- Make an R notebook to document your analysis
-- We used "base R" to make a boxplot of the variance-stabilised counts for convenience. To keep with the tidyverse theme, try to make the plot using `ggplot2`. For the first few steps you will need to make a data frame with an ID column (see below). Then investigate the `tidyr` package to transform the data into a shape that `ggplot2` is happy with.
+
 </div>
-
-```{r}
-
-assay(vsd) %>% 
-  data.frame %>% 
-  tibble::rownames_to_column("Gene")
-```
 
 # Appendix
 
@@ -437,4 +501,7 @@ head(tx_map)
 # Acknowledgement 
 **Original Authors: Belinda Phipson, Anna Trigos, Matt Ritchie, Maria Doyle, Harriet Dashnow, Charity Law**, **Stephane Ballereau, Oscar Rueda, Ashley Sawle**
 Based on the course [RNAseq analysis in R](http://combine-australia.github.io/2016-05-11-RNAseq/) delivered on May 11/12th 2016 and modified by Cancer Research Uk Cambridge Centre for the [Functional Genomics Autumn School 2017](https://bioinformatics-core-shared-training.github.io/cruk-autumn-school-2017/)
+
+
+
 
