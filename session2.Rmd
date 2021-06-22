@@ -349,10 +349,10 @@ dim(results_treated)
 Such duplicated entries can be identified using the `duplicated` function. Fortunately, there are not too many so hopefully we won't lose too much information if we discard the entries that are duplicated. The first occurrence of the duplicated ID will still be included in the table.
 
 ```{r}
-  anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_treated$ENSEMBL,
-              columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
-              keytype="ENSEMBL") %>% 
-  filter(!duplicated(ENSEMBL))
+anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_treated$ENSEMBL,
+            columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
+            keytype="ENSEMBL") %>% 
+filter(!duplicated(ENSEMBL))
 dim(anno)
 ```
 

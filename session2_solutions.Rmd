@@ -24,27 +24,10 @@ rownames(sampleinfo) <- sampleinfo$run
 
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
-                                design = ~CellType)
+                                design = ~condition)
 
 ```
 
-Analyse the default factor of `CellType` to compare `basal` and `luminal` cell types.
-
-```{r}
-de_status <- DESeq(dds)
-```
-
-We can use `dplyr` to transform into a more manageable data frame
-
-```{r}
-library(dplyr)
-library(tibble)
-results_cellType <- results(de_status) %>%
-  as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  
-
-results_cellType
-```
 
 
 # Exercise
@@ -52,95 +35,119 @@ results_cellType
 We now want to use the `Status` as our factor of interest. This can be achieved by changing the `design` our object
 
 ```{r}
-dds_status <- dds
-colData(dds)
-dds_status$Status <- as.factor(dds_status$Status)
-design(dds_status) <- ~Status
-de_status <- DESeq(dds_status)
+dds_condition<- dds
+colData(dds_condition)
+## You will need to change this line to choose the correct comparison
+design(dds_condition) <- ~condition
 ```
 
-The default contrast is already virgin vs lactation. As above we can create a data frame for further processing.
+The default contrast is already TGF vs CTRL. As above we can create a data frame for further processing.
 
 ```{r}
-results_status <- results(de_status) %>%
+de_condition <- DESeq(dds_condition)
+results_condition <- results(de_condition) %>%
   as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  
+  tibble::rownames_to_column("ENSEMBL")  
 
-results_status
-saveRDS(results_status,"Robjects/results_status.rds")
+results_condition
+saveRDS(results_condition,"Robjects/results_condition.rds")
 ```
 
 We can filter to discover differentially-expressed genes and write out to a file
 
 ```{r}
 library(readr)
-results_status %>% filter(abs(log2FoldChange) > 1, padj < 0.05) %>% 
-  write_csv("virgin_vs_lactation_DE.csv")
+results_condition %>% filter(abs(log2FoldChange) > 1, padj < 0.05) %>% 
+  write_csv("TGF_vs_CTR_DE.csv")
 ```
 
 # Exercise
 
-For the venn diagram we will need the results of the two contrasts as data frame. Both these tables can be obtained from the `results_status` object that we already created.
+In the same way as the workshop, we can obtain annotation using the `org.Hs.eg.db` package
 
 ```{r}
-library(limma)
-results_p_vs_v <- results(de_status, contrast = c("Status","pregnancy","virgin")) %>% 
-    as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  
+library(org.Hs.eg.db)
+anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_condition$ENSEMBL,
+            columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
+            keytype="ENSEMBL") %>% 
+filter(!duplicated(ENSEMBL))
 
-results_l_vs_v <- results(de_status, contrast = c("Status","lactation","virgin")) %>% 
-    as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  
+results_tgf <- left_join(results_condition,anno)
 
-venn_data <- data.frame("Pregnancy" = results_p_vs_v$padj < 0.05, "Lactation" = results_l_vs_v$padj < 0.05)
-
-vennDiagram(venn_data)
+## save as an R object
+saveRDS(results_tgf, file="Robjects/results_TGF_vs_CTR_annotated.rds")
 ```
 
-# Exercise
+We can filter the table to our genes of interest. All seem to have significant p-values in the comparison (as expected).
 
-Performing differential expression on subsets, as-per the notes.
 
 ```{r}
-## create subset corresponding to just basal samples
-dds_basal <- dds[,which(dds$CellType == "basal")]
-dds_basal$Status <- as.factor(dds_basal$Status)
-design(dds_basal) <- ~Status
-## perform analysis
-de_basal <- DESeq(dds_basal)
+filter(results_tgf, SYMBOL %in% c("COL1A1","COL1A2","COL3A1"))
 ```
+
+The counts can be visualised using the `plotCounts` function. The `mfrow` function is the "base" graphics method for combining plots - in this case putting three plots in a row.
 
 ```{r}
-## create subset corresponding to just luminal samples
-dds_luminal <- dds[,which(dds$CellType == "luminal")]
-dds_luminal$Status <- as.factor(dds_luminal$Status)
-design(dds_luminal) <- ~Status
-de_luminal <- DESeq(dds_luminal)
+par(mfrow=c(1,3))
+plotCounts(dds, "ENSG00000108821", intgroup = "condition")
+plotCounts(dds, "ENSG00000164692", intgroup = "condition")
+plotCounts(dds, "ENSG00000168542", intgroup = "condition")
 ```
 
-The venn diagram is then constructed by making a table of 0 and 1's (depending on whether each gene is differentially-expressed in each analysis).
+A ggplot2 version of the plot is a bit more complicated. We first have to extract the relevant normalised gene intensites from the variance-stabilised object. This matrix has *ENSEMBL* IDs for rows.
 
 ```{r}
-venn_data <- data.frame(Basal = results(de_basal)$padj < 0.05, Luminal  = results(de_luminal)$padj<0.05)
-
-vennDiagram(venn_data)
+my_genes <- c("ENSG00000108821","ENSG00000164692","ENSG00000168542")
+vsd <- vst(dds)
+assay(vsd) %>% data.frame %>% 
+  tibble::rownames_to_column("ENSEMBL") %>% 
+  filter(ENSEMBL %in% my_genes)
 ```
-The multi-factor uses all samples, but includes a factor for the `CellType`. We can still extract results for virgin vs lactation, but these are corrected for differences in `CellType`.
+
+The matrix is not in the correct shape for `ggplot2`; as it is *wide* rather than *long*. So we will have to use `tidyr` to reshape.
 
 ```{r}
-dds_mf <- dds
-dds_mf$Status <- as.factor(dds_mf$Status)
-design(dds_mf) <- ~CellType+Status
-de_mf <- DESeq(dds_mf)
-results_mf <- results(de_mf,contrast=c("Status","virgin","lactation"
-                                       ))
-results_mf
+assay(vsd) %>% data.frame %>% 
+  tibble::rownames_to_column("ENSEMBL") %>% 
+  filter(ENSEMBL %in% my_genes) %>% 
+  tidyr::pivot_longer(-ENSEMBL, names_to = "Sample",values_to = "count")
+
 ```
 
-Using a filter we can identify the genes from this analysis. We can see that many more genes identified, so in this case it is better to include all samples and model the difference in `CellType`.
+R isn't keen on having column names that start with a number, so has decided to be an `X` in front of every sample name. We can remove this using `gsub` and then combine with the sample information
 
 ```{r}
-filter(data.frame(results_mf), padj < 0.05)
+assay(vsd) %>% data.frame %>% 
+  tibble::rownames_to_column("ENSEMBL") %>% 
+  filter(ENSEMBL %in% my_genes) %>% 
+  tidyr::pivot_longer(-ENSEMBL, names_to = "Run",values_to = "count") %>% 
+  mutate(Run  = gsub("X","", Run)) %>% 
+  left_join(sampleinfo)
 ```
 
+Finally, we can plot using a jitter plot and *facet*ing by the gene name.
+
+```{r}
+assay(vsd) %>% data.frame %>% 
+  tibble::rownames_to_column("ENSEMBL") %>% 
+  filter(ENSEMBL %in% my_genes) %>% 
+  tidyr::pivot_longer(-ENSEMBL, names_to = "Run",values_to = "count") %>% 
+  mutate(Run  = gsub("X","", Run)) %>% 
+  left_join(sampleinfo) %>% 
+  ggplot(aes(x = condition, y = count, col=condition)) + geom_jitter(width=0.1) + facet_wrap(~ENSEMBL)
+
+```
+
+If we wanted the gene `SYMBOL` instead of `ENSEMBL`, we could incorporate our `anno` data frame before plotting. This will add the `SYMBOL` for these genes of interest.
+
+```{r}
+assay(vsd) %>% data.frame %>% 
+  tibble::rownames_to_column("ENSEMBL") %>% 
+  filter(ENSEMBL %in% my_genes) %>% 
+  tidyr::pivot_longer(-ENSEMBL, names_to = "Run",values_to = "count") %>% 
+  mutate(Run  = gsub("X","", Run)) %>% 
+  left_join(sampleinfo) %>% 
+  left_join(anno) %>% 
+  ggplot(aes(x = condition, y = count, col=condition)) + geom_jitter(width=0.1) + facet_wrap(~SYMBOL)
+```
 

@@ -387,13 +387,33 @@ div.tocify {
 <p>The <code>sampleInfo.txt</code> in the <code>meta_data</code> folder contains basic information about the samples that we will need for the analysis today. This includes the ID for the sample from SRA, an ID assigned by the researcher, and the cell type and developmental stage for each sample.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIHRoZSBzYW1wbGUgaW5mb3JtYXRpb24gaW50byBSXG5saWJyYXJ5KHJlYWRyKVxuc2FtcGxlaW5mbyA8LSByZWFkX2NzdihcIm1ldGFfZGF0YS9zYW1wbGVJbmZvLmNzdlwiKVxuVmlldyhzYW1wbGVpbmZvKVxuc2FtcGxlaW5mb1xuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBSZWFkIHRoZSBzYW1wbGUgaW5mb3JtYXRpb24gaW50byBSXG5saWJyYXJ5KHJlYWRyKVxuc2FtcGxlaW5mbyA8LSByZWFkX2NzdihcIm1ldGFfZGF0YS9zYW1wbGVJbmZvLmNzdlwiKVxuYGBgIn0= -->
 <pre class="r"><code># Read the sample information into R
 library(readr)
-sampleinfo &lt;- read_csv(&quot;meta_data/sampleInfo.csv&quot;)
-View(sampleinfo)
+sampleinfo &lt;- read_csv(&quot;meta_data/sampleInfo.csv&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuY29scyhcbiAgUnVuID0gY29sX2NoYXJhY3RlcigpLFxuICBjb25kaXRpb24gPSBjb2xfY2hhcmFjdGVyKCksXG4gIE5hbWUgPSBjb2xfY2hhcmFjdGVyKCksXG4gIFJlcGxpY2F0ZSA9IGNvbF9kb3VibGUoKSxcbiAgVHJlYXRlZCA9IGNvbF9jaGFyYWN0ZXIoKVxuKVxuIn0= -->
+<pre><code>
+-- Column specification -----------------------------------------------
+cols(
+  Run = col_character(),
+  condition = col_character(),
+  Name = col_character(),
+  Replicate = col_double(),
+  Treated = col_character()
+)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuVmlldyhzYW1wbGVpbmZvKVxuc2FtcGxlaW5mb1xuYGBgIn0= -->
+<pre class="r"><code>View(sampleinfo)
 sampleinfo</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInNwZWNfdGJsX2RmIiwidGJsX2RmIiwidGJsIiwiZGF0YS5mcmFtZSJdLCJucm93Ijo5LCJuY29sIjo1LCJzdW1tYXJ5Ijp7IkEgdGliYmxlIjpbIjkgeCA1Il19fSwicmRmIjoiSDRzSUFBQUFBQUFBQnBWVHdVNkRRQlRjVW1nRjA4YkUveUFCU3FzbmpUVWFMbzNCSHVxSnJFQWJFc29TdWthUGZySTNiOFZkeWhoY05WRVM5czNPbStHOXQwQjR2ZktzbFVVSTZSTzlKMVpEUURLWTN6bXU3eEtpYTJMWEl6b3haWHdSK1ZNQnBPWkUzR2Fic0p4b3ZneWpxM25rZ25HajVlMk5aQ1l0WTNwUjBFaDhTQ1l3VGNINE1NM0FURnVUZ3djZnorQnlQRkJuc0Rrb1pwM0Q1eXV0OW9VYlVMaGFxQVhoWC9NeHJ3RDVabzE4VmlsMURObWxnNDNzRHhzOTZDU2t5dTJxM0k3SzdhcThyc3JycUR3Ung3THl4UnRwTGpWZWtsL2kwYzlSbWFTM0FIajRCdjZaK3ZvNUdRWGRwcnUybW9GRERaOEtmREV4SzVLTVp3eUV2aEFHSk1PMHpMT1ljaEREWlpXS1hhSVVNU3YyYktQUVNMNnFWN0hVZGYydWRoUG5kSWR1UUZvSjVkUmVWN0l1SVh2Rk1tU2w3RTZZdE81ZjhmbTdWQW94emhsTjd1bTJ6Tk9nV0RQNS9DWjd1RVl0Tmp2WU9GVFVhdVdVQm1teHlRcU1idVQwTWMxUlJBemN6R3VYVlZad0RDTFluYzBacDlCWk1jdkJOS09SL1FjazlJYk1EQVFBQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Run"],"name":[1],"type":["chr"],"align":["left"]},{"label":["condition"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Name"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Replicate"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Treated"],"name":[5],"type":["chr"],"align":["left"]}],"data":[{"1":"1_CTR_BC_2","2":"CTR","3":"CTR_1","4":"1","5":"N"},{"1":"2_TGF_BC_4","2":"TGF","3":"TGF_1","4":"1","5":"Y"},{"1":"3_IR_BC_5","2":"IR","3":"IR_1","4":"1","5":"Y"},{"1":"4_CTR_BC_6","2":"CTR","3":"CTR_2","4":"2","5":"N"},{"1":"5_TGF_BC_7","2":"TGF","3":"TGF_2","4":"2","5":"Y"},{"1":"6_IR_BC_12","2":"IR","3":"IR_2","4":"2","5":"Y"},{"1":"7_CTR_BC_13","2":"ctr","3":"CTR_3","4":"3","5":"N"},{"1":"8_TGF_BC_14","2":"tgf","3":"TGF_3","4":"3","5":"Y"},{"1":"9_IR_BC_15","2":"ir","3":"IR_3","4":"3","5":"Y"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[9]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -428,13 +448,32 @@ sampleinfo</code></pre>
 <p>The function we are going to use to import the salmon files requires a <code>vector</code> comprising the paths to the files that are to be imported. To construct such a vector we can use the following code chunk. We can name each item in the vector according to the directory name. These names will be used eventually to name the columns of our count matrices.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlycyA8LSBsaXN0LmZpbGVzKFwic2FsbW9uX3F1YW50L1wiKVxucXVhbnRfZmlsZXMgPC0gbGlzdC5maWxlcyhcInNhbG1vbl9xdWFudC9cIixwYXR0ZXJuPVwicXVhbnQuc2YuZ3pcIixyZWN1cnNpdmUgPSBUUlVFLGZ1bGwubmFtZXMgPSBUUlVFKVxubmFtZXMocXVhbnRfZmlsZXMpIDwtIGRpcnNcbnF1YW50X2ZpbGVzXG5cblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGlycyA8LSBsaXN0LmZpbGVzKFwic2FsbW9uX3F1YW50L1wiKVxucXVhbnRfZmlsZXMgPC0gbGlzdC5maWxlcyhcInNhbG1vbl9xdWFudC9cIixwYXR0ZXJuPVwicXVhbnQuc2YuZ3pcIixyZWN1cnNpdmUgPSBUUlVFLGZ1bGwubmFtZXMgPSBUUlVFKVxubmFtZXMocXVhbnRfZmlsZXMpIDwtIGRpcnNcbnF1YW50X2ZpbGVzXG5gYGAifQ== -->
 <pre class="r"><code>dirs &lt;- list.files(&quot;salmon_quant/&quot;)
 quant_files &lt;- list.files(&quot;salmon_quant/&quot;,pattern=&quot;quant.sf.gz&quot;,recursive = TRUE,full.names = TRUE)
 names(quant_files) &lt;- dirs
-quant_files
-</code></pre>
+quant_files</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgICAgICAgICAgICAgICAxX0NUUl9CQ18yIFxuIFwic2FsbW9uX3F1YW50Ly8xX0NUUl9CQ18yL3F1YW50LnNmLmd6XCIgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIDJfVEdGX0JDXzQgXG4gXCJzYWxtb25fcXVhbnQvLzJfVEdGX0JDXzQvcXVhbnQuc2YuZ3pcIiBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIDNfSVJfQkNfNSBcbiAgXCJzYWxtb25fcXVhbnQvLzNfSVJfQkNfNS9xdWFudC5zZi5nelwiIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICA0X0NUUl9CQ182IFxuIFwic2FsbW9uX3F1YW50Ly80X0NUUl9CQ182L3F1YW50LnNmLmd6XCIgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIDVfVEdGX0JDXzcgXG4gXCJzYWxtb25fcXVhbnQvLzVfVEdGX0JDXzcvcXVhbnQuc2YuZ3pcIiBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgNl9JUl9CQ18xMiBcbiBcInNhbG1vbl9xdWFudC8vNl9JUl9CQ18xMi9xdWFudC5zZi5nelwiIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgIDdfQ1RSX0JDXzEzIFxuXCJzYWxtb25fcXVhbnQvLzdfQ1RSX0JDXzEzL3F1YW50LnNmLmd6XCIgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgOF9UR0ZfQkNfMTQgXG5cInNhbG1vbl9xdWFudC8vOF9UR0ZfQkNfMTQvcXVhbnQuc2YuZ3pcIiBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgOV9JUl9CQ18xNSBcbiBcInNhbG1vbl9xdWFudC8vOV9JUl9CQ18xNS9xdWFudC5zZi5nelwiIFxuIn0= -->
+<pre><code>                             1_CTR_BC_2 
+ &quot;salmon_quant//1_CTR_BC_2/quant.sf.gz&quot; 
+                             2_TGF_BC_4 
+ &quot;salmon_quant//2_TGF_BC_4/quant.sf.gz&quot; 
+                              3_IR_BC_5 
+  &quot;salmon_quant//3_IR_BC_5/quant.sf.gz&quot; 
+                             4_CTR_BC_6 
+ &quot;salmon_quant//4_CTR_BC_6/quant.sf.gz&quot; 
+                             5_TGF_BC_7 
+ &quot;salmon_quant//5_TGF_BC_7/quant.sf.gz&quot; 
+                             6_IR_BC_12 
+ &quot;salmon_quant//6_IR_BC_12/quant.sf.gz&quot; 
+                            7_CTR_BC_13 
+&quot;salmon_quant//7_CTR_BC_13/quant.sf.gz&quot; 
+                            8_TGF_BC_14 
+&quot;salmon_quant//8_TGF_BC_14/quant.sf.gz&quot; 
+                             9_IR_BC_15 
+ &quot;salmon_quant//9_IR_BC_15/quant.sf.gz&quot; </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -444,20 +483,62 @@ quant_files
 <p><strong>This is not usually part of the analysis workflow, but we include it here so we can understand what the raw data are</strong></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucXVhbnRzIDwtIHJlYWRfdHN2KHF1YW50X2ZpbGVzWzFdKVxuaGVhZChxdWFudHMpXG5kaW0ocXVhbnRzKVxuYGBgIn0= -->
-<pre class="r"><code>quants &lt;- read_tsv(quant_files[1])
-head(quants)
-dim(quants)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucXVhbnRzIDwtIHJlYWRfdHN2KHF1YW50X2ZpbGVzWzFdKVxuYGBgIn0= -->
+<pre class="r"><code>quants &lt;- read_tsv(quant_files[1])</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuY29scyhcbiAgTmFtZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgTGVuZ3RoID0gY29sX2RvdWJsZSgpLFxuICBFZmZlY3RpdmVMZW5ndGggPSBjb2xfZG91YmxlKCksXG4gIFRQTSA9IGNvbF9kb3VibGUoKSxcbiAgTnVtUmVhZHMgPSBjb2xfZG91YmxlKClcbilcbiJ9 -->
+<pre><code>
+-- Column specification -----------------------------------------------
+cols(
+  Name = col_character(),
+  Length = col_double(),
+  EffectiveLength = col_double(),
+  TPM = col_double(),
+  NumReads = col_double()
+)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChxdWFudHMpXG5gYGAifQ== -->
+<pre class="r"><code>head(quants)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6NSwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI2IHggNSJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJndHlpVERtaXVCaVlHQmdabUJoQkpLc1FDWURtM09Bb1pHcEVRTURDeE9ReDhqQXdzQUpvaXVBOHNKQUJraU5BRWdaVklMZjFTODR4QUFFVEV6TmpJMHNzQWdiR0J1WVlncGJXQmlhbUdNSW14bGFHaG1hWWFvMk56WTJ4V0sybWFXUmhTVlFpQS9rSW9lWlQwQWVZSEJvUGdDaHA4cEE2RUFHQ04zbUFLRWJkakJBQVVUZk5JTzNFek9LTmppVXI5YVhtcit2M0dGQ3ZYaXYvMzFyQnc2b3Z1cTN4aURnVU1RUnhpSXh1UlNtei83SloybFJmUnM5QmpUZzRIMnNJV25DdXd2bzRuRDdRblpzVy9oQ1pndUdQdDF0OGZ4UkF1S1kybENpZ2pVdk1UZTFHQm9OckZCQkZqK2dJSlRONXBPYWwxNlNBUSt0dExUVTVKTE1zbFFVWWVhUUFGOG9rOE92TkRjb05UR2xHTTBpenFMOGNqMllaYnhBek5RQUpQNy8vLzhMM1VYSk9ZbkZNQmZCQkxsU0Vrc1M5ZEtLUU81aVlQaUhwb1U5djZBa016OFBxSWtKT1ZYQmsxc1JtZ0IvYVI3SUpTbTZ5Um1sZWRtNlJpQUx3TklRd0F0bHN5R3hXU0ZXTXYxSEN5bzJZREJrNXNFQ2l6VW5NU2sxQjhyaEEvb1k3R0c5Z3FMTXZCS1lUNENpeFhvbCtTV0pNSFZjeWZrNU1CR3czeGorQVFBMkh6RlVUUU1BQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Name"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Length"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["EffectiveLength"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["TPM"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["NumReads"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"ENST00000456328","2":"1657","3":"1420.232","4":"0.654676","5":"82.88615"},{"1":"ENST00000450305","2":"632","3":"378.699","4":"0.000000","5":"0.00000"},{"1":"ENST00000488147","2":"1351","3":"1055.773","4":"0.000000","5":"0.00000"},{"1":"ENST00000619216","2":"68","3":"3.000","4":"55.550793","5":"14.85619"},{"1":"ENST00000473358","2":"712","3":"446.825","4":"0.000000","5":"0.00000"},{"1":"ENST00000469289","2":"535","3":"288.521","4":"0.000000","5":"0.00000"}],"options":{"columns":{"min":{},"max":[10],"total":[5]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGltKHF1YW50cylcbmBgYCJ9 -->
+<pre class="r"><code>dim(quants)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDE5OTY1OCAgICAgIDVcbiJ9 -->
+<pre><code>[1] 199658      5</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Our differential expression analysis will be carried-out at the <em>gene-level</em>, so we need to perform an additional level of summarisation before we can proceed. Effectively we need to sum the counts for all exons that belong to each gene. The <em>mappings</em> from transcript to genes can be obtained by a pre-built database (such as Ensembl). We have provided such data in a csv file that we can read in (<code>tx2gene.csv</code>). See the Appendix if you want to know the details</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHgyZ2VuZSA8LSByZWFkX2NzdihcInR4MmdlbmUuY3N2XCIpXG5oZWFkKHR4MmdlbmUpXG5gYGAifQ== -->
-<pre class="r"><code>tx2gene &lt;- read_csv(&quot;tx2gene.csv&quot;)
-head(tx2gene)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudHgyZ2VuZSA8LSByZWFkX2NzdihcInR4MmdlbmUuY3N2XCIpXG5gYGAifQ== -->
+<pre class="r"><code>tx2gene &lt;- read_csv(&quot;tx2gene.csv&quot;)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiXG4tLSBDb2x1bW4gc3BlY2lmaWNhdGlvbiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLVxuY29scyhcbiAgRU5TVDAwMDAwNDU2MzI4ID0gY29sX2NoYXJhY3RlcigpLFxuICBFTlNHMDAwMDAyMjM5NzIgPSBjb2xfY2hhcmFjdGVyKClcbilcbiJ9 -->
+<pre><code>
+-- Column specification -----------------------------------------------
+cols(
+  ENST00000456328 = col_character(),
+  ENSG00000223972 = col_character()
+)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZCh0eDJnZW5lKVxuYGBgIn0= -->
+<pre class="r"><code>head(tx2gene)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6Miwic3VtbWFyeSI6eyJBIHRpYmJsZSI6WyI2IHggMiJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJvMlJVVStETUJESEM4TE1TT1pNL0J3ajBFSmJudFg0dGhqMVlhK1ZvUkt4TE1DaWozNXVINFpYMWlaS01iRVA1ZTUzZC8rN0szZFhHeEpzQW9UUUNmSWN1SDB3MGV6eU5zWXBSc2h6d1hPUWgrYnErd0h4Q3pBVVBGZHBPckM4WHQ4L1JPb2thVVNpMU1hY3h3bXpNSTB6SEZNN214R1NjaHZURFBQTUZvbFlsTkdKaVc2R01NWWtZM2dDTTB3bU1PT1lNaHNuSk9IcHZ6RlBDQmsvbmkvRlc5SHFNZDJKaDZNRTg3K20veTAxYityMzBNZ3RsTnduWEgzZmY0MTc1cFZvVFU4RGc2M29SUGpVUUQxNGgxSEphYjNyeWxwQ2thdit0RDhxZHBvUldPNmxtbVM3eWwvMjhuVkZWSU1oZkR3TGJjOSsyTzZ4cGR0cktWOUx6UXI1WE1yQ3pGNkp4NkxTemhsc1BDd2M3cHBTZG1ZVG9HM1kxWjB3ZVVGZVY0WU11NkhETjdyejUrM2hBZ0FBIn0= -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["ENST00000456328"],"name":[1],"type":["chr"],"align":["left"]},{"label":["ENSG00000223972"],"name":[2],"type":["chr"],"align":["left"]}],"data":[{"1":"ENST00000450305","2":"ENSG00000223972"},{"1":"ENST00000488147","2":"ENSG00000227232"},{"1":"ENST00000619216","2":"ENSG00000278267"},{"1":"ENST00000473358","2":"ENSG00000243485"},{"1":"ENST00000469289","2":"ENSG00000243485"},{"1":"ENST00000607096","2":"ENSG00000284332"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We can import our dataset with the <code>tximport</code> package. The <code>ignoreTxVersion</code> argument needs to be set to <code>TRUE</code>; you might have noticed that the transcript names in the quant files have a version number at the end <code>e.g. .1</code>, so won’t match the transcript names in the <code>tx2gene</code> table.</p>
@@ -467,6 +548,14 @@ head(tx2gene)</code></pre>
 <pre class="r"><code>library(tximport)
 txi &lt;- tximport(quant_files,type=&quot;salmon&quot;,tx2gene = tx2gene,ignoreTxVersion = TRUE)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoicmVhZGluZyBpbiBmaWxlcyB3aXRoIHJlYWRfdHN2XG4xIDIgMyA0IDUgNiA3IDggOSBcbnRyYW5zY3JpcHRzIG1pc3NpbmcgZnJvbSB0eDJnZW5lOiAxXG5zdW1tYXJpemluZyBhYnVuZGFuY2VcbnN1bW1hcml6aW5nIGNvdW50c1xuc3VtbWFyaXppbmcgbGVuZ3RoXG4ifQ== -->
+<pre><code>reading in files with read_tsv
+1 2 3 4 5 6 7 8 9 
+transcripts missing from tx2gene: 1
+summarizing abundance
+summarizing counts
+summarizing length</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>The resulting object is a “<em>list</em>” structure in R which contains a number of components that we can access using a <code>$</code> operator</p>
@@ -476,6 +565,22 @@ txi &lt;- tximport(quant_files,type=&quot;salmon&quot;,tx2gene = tx2gene,ignoreT
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZCh0eGkkY291bnRzKVxuYGBgIn0= -->
 <pre class="r"><code>head(txi$counts)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgIDFfQ1RSX0JDXzIgMl9UR0ZfQkNfNCAzX0lSX0JDXzUgNF9DVFJfQkNfNiA1X1RHRl9CQ183XG5FTlNHMDAwMDAwMDAwMDMgIDE1NzguNjEyMSAgMTU0Ni44OTI5IDEzNDEuNzU0NSAgMTcwNC4zNDAzICAxMzk1LjM2NzBcbkVOU0cwMDAwMDAwMDAwNSAgICAgMC4wMDAwICAgICAwLjAwMDAgICAgMC4wMDAwICAgICAwLjAwMDAgICAgIDAuMDAwMFxuRU5TRzAwMDAwMDAwNDE5ICAxNzc0LjAwMDAgIDE3NzUuMDAwMCAxODY2LjAwMDAgIDE4MDkuMDAwMCAgMTkyMS4wMDAwXG5FTlNHMDAwMDAwMDA0NTcgICA2OTguMzYxOCAgIDYxNy4wMzE3ICA2MDEuMjYyNCAgIDczMy40NTAyICAgNjYxLjUyNTFcbkVOU0cwMDAwMDAwMDQ2MCAgIDI0Ni4zOTU4ICAgMzA5LjAwMjggIDExNS42NDI5ICAgMjI0LjMwMTMgICAyNTUuMDEyNVxuRU5TRzAwMDAwMDAwOTM4ICAgIDEwLjAwMDAgICAgIDUuMDAwMCAgIDExLjAwMDAgICAgIDYuMDAwMCAgICAgMS4wMDAwXG4gICAgICAgICAgICAgICAgNl9JUl9CQ18xMiA3X0NUUl9CQ18xMyA4X1RHRl9CQ18xNCA5X0lSX0JDXzE1XG5FTlNHMDAwMDAwMDAwMDMgIDEyNjQuMDUyMiAgIDE1NTUuNTA1OSAgIDEzNzAuMTM2NyAgMTI2OC42NzMxXG5FTlNHMDAwMDAwMDAwMDUgICAgIDAuMDAwMCAgICAgIDAuMDAwMCAgICAgIDAuMDAwMCAgICAgMS4wMDAwXG5FTlNHMDAwMDAwMDA0MTkgIDE3NzYuMDAwMCAgIDE3OTcuMDAwMCAgIDE0ODIuMDAwMCAgMTk3OS44ODEyXG5FTlNHMDAwMDAwMDA0NTcgICA1MzcuNDMyMyAgICA3NTAuNzMwOCAgICA1OTMuMjQ5MiAgIDYyOC40MDY4XG5FTlNHMDAwMDAwMDA0NjAgICAxMDcuOTkzOSAgICAyNDUuMTI4MyAgICAyODkuNDMyNyAgIDEyNi42MTYxXG5FTlNHMDAwMDAwMDA5MzggICAgIDIuMDAwMCAgICAgMTkuMDAwMCAgICAgIDQuMDAwMCAgICAgOC4wMDAwXG4ifQ== -->
+<pre><code>                1_CTR_BC_2 2_TGF_BC_4 3_IR_BC_5 4_CTR_BC_6 5_TGF_BC_7
+ENSG00000000003  1578.6121  1546.8929 1341.7545  1704.3403  1395.3670
+ENSG00000000005     0.0000     0.0000    0.0000     0.0000     0.0000
+ENSG00000000419  1774.0000  1775.0000 1866.0000  1809.0000  1921.0000
+ENSG00000000457   698.3618   617.0317  601.2624   733.4502   661.5251
+ENSG00000000460   246.3958   309.0028  115.6429   224.3013   255.0125
+ENSG00000000938    10.0000     5.0000   11.0000     6.0000     1.0000
+                6_IR_BC_12 7_CTR_BC_13 8_TGF_BC_14 9_IR_BC_15
+ENSG00000000003  1264.0522   1555.5059   1370.1367  1268.6731
+ENSG00000000005     0.0000      0.0000      0.0000     1.0000
+ENSG00000000419  1776.0000   1797.0000   1482.0000  1979.8812
+ENSG00000000457   537.4323    750.7308    593.2492   628.4068
+ENSG00000000460   107.9939    245.1283    289.4327   126.6161
+ENSG00000000938     2.0000     19.0000      4.0000     8.0000</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>`</p>
@@ -488,13 +593,29 @@ txi &lt;- tximport(quant_files,type=&quot;salmon&quot;,tx2gene = tx2gene,ignoreT
 <p>Printing the contents of <code>dds</code> to the screen gives details of how the data are represented.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShERVNlcTIpXG5kZHMgPC0gREVTZXFEYXRhU2V0RnJvbVR4aW1wb3J0KHR4aSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbERhdGEgPSBzYW1wbGVpbmZvLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNpZ24gPSB+VHJlYXRlZClcbmRkc1xuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShERVNlcTIpXG5kZHMgPC0gREVTZXFEYXRhU2V0RnJvbVR4aW1wb3J0KHR4aSwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbERhdGEgPSBzYW1wbGVpbmZvLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBkZXNpZ24gPSB+VHJlYXRlZClcbmBgYCJ9 -->
 <pre class="r"><code>library(DESeq2)
 dds &lt;- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
-                                design = ~Treated)
-dds</code></pre>
+                                design = ~Treated)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoic29tZSB2YXJpYWJsZXMgaW4gZGVzaWduIGZvcm11bGEgYXJlIGNoYXJhY3RlcnMsIGNvbnZlcnRpbmcgdG8gZmFjdG9yc1xuIn0= -->
+<pre><code>some variables in design formula are characters, converting to factors</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzXG5gYGAifQ== -->
+<pre class="r"><code>dds</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2xhc3M6IERFU2VxRGF0YVNldCBcbmRpbTogNTc5MTQgOSBcbm1ldGFkYXRhKDEpOiB2ZXJzaW9uXG5hc3NheXMoMik6IGNvdW50cyBhdmdUeExlbmd0aFxucm93bmFtZXMoNTc5MTQpOiBFTlNHMDAwMDAwMDAwMDMgRU5TRzAwMDAwMDAwMDA1IC4uLlxuICBFTlNHMDAwMDAyODQ3NDcgRU5TRzAwMDAwMjg0NzQ4XG5yb3dEYXRhIG5hbWVzKDApOlxuY29sbmFtZXMoOSk6IDFfQ1RSX0JDXzIgMl9UR0ZfQkNfNCAuLi4gOF9UR0ZfQkNfMTQgOV9JUl9CQ18xNVxuY29sRGF0YSBuYW1lcyg1KTogUnVuIGNvbmRpdGlvbiBOYW1lIFJlcGxpY2F0ZSBUcmVhdGVkXG4ifQ== -->
+<pre><code>class: DESeqDataSet 
+dim: 57914 9 
+metadata(1): version
+assays(2): counts avgTxLength
+rownames(57914): ENSG00000000003 ENSG00000000005 ...
+  ENSG00000284747 ENSG00000284748
+rowData names(0):
+colnames(9): 1_CTR_BC_2 2_TGF_BC_4 ... 8_TGF_BC_14 9_IR_BC_15
+colData names(5): Run condition Name Replicate Treated</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>The object contains all the counts which can be retrieved using the <code>assay</code> function.</p>
@@ -503,6 +624,22 @@ dds</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaGVhZChhc3NheShkZHMpKVxuYGBgIn0= -->
 <pre class="r"><code>head(assay(dds))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiICAgICAgICAgICAgICAgIDFfQ1RSX0JDXzIgMl9UR0ZfQkNfNCAzX0lSX0JDXzUgNF9DVFJfQkNfNiA1X1RHRl9CQ183XG5FTlNHMDAwMDAwMDAwMDMgICAgICAgMTU3OSAgICAgICAxNTQ3ICAgICAgMTM0MiAgICAgICAxNzA0ICAgICAgIDEzOTVcbkVOU0cwMDAwMDAwMDAwNSAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAwICAgICAgICAgIDAgICAgICAgICAgMFxuRU5TRzAwMDAwMDAwNDE5ICAgICAgIDE3NzQgICAgICAgMTc3NSAgICAgIDE4NjYgICAgICAgMTgwOSAgICAgICAxOTIxXG5FTlNHMDAwMDAwMDA0NTcgICAgICAgIDY5OCAgICAgICAgNjE3ICAgICAgIDYwMSAgICAgICAgNzMzICAgICAgICA2NjJcbkVOU0cwMDAwMDAwMDQ2MCAgICAgICAgMjQ2ICAgICAgICAzMDkgICAgICAgMTE2ICAgICAgICAyMjQgICAgICAgIDI1NVxuRU5TRzAwMDAwMDAwOTM4ICAgICAgICAgMTAgICAgICAgICAgNSAgICAgICAgMTEgICAgICAgICAgNiAgICAgICAgICAxXG4gICAgICAgICAgICAgICAgNl9JUl9CQ18xMiA3X0NUUl9CQ18xMyA4X1RHRl9CQ18xNCA5X0lSX0JDXzE1XG5FTlNHMDAwMDAwMDAwMDMgICAgICAgMTI2NCAgICAgICAgMTU1NiAgICAgICAgMTM3MCAgICAgICAxMjY5XG5FTlNHMDAwMDAwMDAwMDUgICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgICAgMCAgICAgICAgICAxXG5FTlNHMDAwMDAwMDA0MTkgICAgICAgMTc3NiAgICAgICAgMTc5NyAgICAgICAgMTQ4MiAgICAgICAxOTgwXG5FTlNHMDAwMDAwMDA0NTcgICAgICAgIDUzNyAgICAgICAgIDc1MSAgICAgICAgIDU5MyAgICAgICAgNjI4XG5FTlNHMDAwMDAwMDA0NjAgICAgICAgIDEwOCAgICAgICAgIDI0NSAgICAgICAgIDI4OSAgICAgICAgMTI3XG5FTlNHMDAwMDAwMDA5MzggICAgICAgICAgMiAgICAgICAgICAxOSAgICAgICAgICAgNCAgICAgICAgICA4XG4ifQ== -->
+<pre><code>                1_CTR_BC_2 2_TGF_BC_4 3_IR_BC_5 4_CTR_BC_6 5_TGF_BC_7
+ENSG00000000003       1579       1547      1342       1704       1395
+ENSG00000000005          0          0         0          0          0
+ENSG00000000419       1774       1775      1866       1809       1921
+ENSG00000000457        698        617       601        733        662
+ENSG00000000460        246        309       116        224        255
+ENSG00000000938         10          5        11          6          1
+                6_IR_BC_12 7_CTR_BC_13 8_TGF_BC_14 9_IR_BC_15
+ENSG00000000003       1264        1556        1370       1269
+ENSG00000000005          0           0           0          1
+ENSG00000000419       1776        1797        1482       1980
+ENSG00000000457        537         751         593        628
+ENSG00000000460        108         245         289        127
+ENSG00000000938          2          19           4          8</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Whereas <code>colData</code> will display the meta data that has been stored with the object.</p>
@@ -511,15 +648,38 @@ dds</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sRGF0YShkZHMpXG5gYGAifQ== -->
 <pre class="r"><code>colData(dds)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiRGF0YUZyYW1lIHdpdGggOSByb3dzIGFuZCA1IGNvbHVtbnNcbiAgICAgICAgICAgICAgICAgICAgUnVuICAgY29uZGl0aW9uICAgICAgICBOYW1lIFJlcGxpY2F0ZSAgVHJlYXRlZFxuICAgICAgICAgICAgPGNoYXJhY3Rlcj4gPGNoYXJhY3Rlcj4gPGNoYXJhY3Rlcj4gPG51bWVyaWM+IDxmYWN0b3I+XG4xX0NUUl9CQ18yICAgMV9DVFJfQkNfMiAgICAgICAgIENUUiAgICAgICBDVFJfMSAgICAgICAgIDEgICAgICAgIE5cbjJfVEdGX0JDXzQgICAyX1RHRl9CQ180ICAgICAgICAgVEdGICAgICAgIFRHRl8xICAgICAgICAgMSAgICAgICAgWVxuM19JUl9CQ181ICAgICAzX0lSX0JDXzUgICAgICAgICAgSVIgICAgICAgIElSXzEgICAgICAgICAxICAgICAgICBZXG40X0NUUl9CQ182ICAgNF9DVFJfQkNfNiAgICAgICAgIENUUiAgICAgICBDVFJfMiAgICAgICAgIDIgICAgICAgIE5cbjVfVEdGX0JDXzcgICA1X1RHRl9CQ183ICAgICAgICAgVEdGICAgICAgIFRHRl8yICAgICAgICAgMiAgICAgICAgWVxuNl9JUl9CQ18xMiAgIDZfSVJfQkNfMTIgICAgICAgICAgSVIgICAgICAgIElSXzIgICAgICAgICAyICAgICAgICBZXG43X0NUUl9CQ18xMyA3X0NUUl9CQ18xMyAgICAgICAgIGN0ciAgICAgICBDVFJfMyAgICAgICAgIDMgICAgICAgIE5cbjhfVEdGX0JDXzE0IDhfVEdGX0JDXzE0ICAgICAgICAgdGdmICAgICAgIFRHRl8zICAgICAgICAgMyAgICAgICAgWVxuOV9JUl9CQ18xNSAgIDlfSVJfQkNfMTUgICAgICAgICAgaXIgICAgICAgIElSXzMgICAgICAgICAzICAgICAgICBZXG4ifQ== -->
+<pre><code>DataFrame with 9 rows and 5 columns
+                    Run   condition        Name Replicate  Treated
+            &lt;character&gt; &lt;character&gt; &lt;character&gt; &lt;numeric&gt; &lt;factor&gt;
+1_CTR_BC_2   1_CTR_BC_2         CTR       CTR_1         1        N
+2_TGF_BC_4   2_TGF_BC_4         TGF       TGF_1         1        Y
+3_IR_BC_5     3_IR_BC_5          IR        IR_1         1        Y
+4_CTR_BC_6   4_CTR_BC_6         CTR       CTR_2         2        N
+5_TGF_BC_7   5_TGF_BC_7         TGF       TGF_2         2        Y
+6_IR_BC_12   6_IR_BC_12          IR        IR_2         2        Y
+7_CTR_BC_13 7_CTR_BC_13         ctr       CTR_3         3        N
+8_TGF_BC_14 8_TGF_BC_14         tgf       TGF_3         3        Y
+9_IR_BC_15   9_IR_BC_15          ir        IR_3         3        Y</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>Individual columns from the metadata can also be accessed and printed using the <code>$</code> notation</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzJGNvbmRpdGlvblxuZGRzJFRyZWF0ZWRcbmBgYCJ9 -->
-<pre class="r"><code>dds$condition
-dds$Treated</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzJGNvbmRpdGlvblxuYGBgIn0= -->
+<pre class="r"><code>dds$condition</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiQ1RSXCIgXCJUR0ZcIiBcIklSXCIgIFwiQ1RSXCIgXCJUR0ZcIiBcIklSXCIgIFwiY3RyXCIgXCJ0Z2ZcIiBcImlyXCIgXG4ifQ== -->
+<pre><code>[1] &quot;CTR&quot; &quot;TGF&quot; &quot;IR&quot;  &quot;CTR&quot; &quot;TGF&quot; &quot;IR&quot;  &quot;ctr&quot; &quot;tgf&quot; &quot;ir&quot; </code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzJFRyZWF0ZWRcbmBgYCJ9 -->
+<pre class="r"><code>dds$Treated</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIE4gWSBZIE4gWSBZIE4gWSBZXG5MZXZlbHM6IE4gWVxuIn0= -->
+<pre><code>[1] N Y Y N Y Y N Y Y
+Levels: N Y</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>The metadata columns can also be re-assigned. This useful in this case because we can see that <code>condition</code> is not stored as a factor, which could cause problems later on when we want to use <code>condition</code> in the differential expression.</p>
@@ -538,15 +698,23 @@ dds$Treated</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3VtKGFzc2F5KGRkcylbLDFdKVxuYGBgIn0= -->
 <pre class="r"><code>sum(assay(dds)[,1])</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDM3OTY2MzkyXG4ifQ== -->
+<pre><code>[1] 37966392</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>A convenience function <code>colSums</code> exists for calculating the sum of each column in a matrix, returning a <code>vector</code> as a result.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sU3Vtcyhhc3NheShkZHMpKVxuXG5gYGAifQ== -->
-<pre class="r"><code>colSums(assay(dds))
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY29sU3Vtcyhhc3NheShkZHMpKVxuYGBgIn0= -->
+<pre class="r"><code>colSums(assay(dds))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiIDFfQ1RSX0JDXzIgIDJfVEdGX0JDXzQgICAzX0lSX0JDXzUgIDRfQ1RSX0JDXzYgIDVfVEdGX0JDXzcgXG4gICAzNzk2NjM5MiAgICA0MjMwMjQ1MyAgICAzMzMwMDAwMiAgICAzOTQwMTg3OSAgICAzNzcxNjM2NiBcbiA2X0lSX0JDXzEyIDdfQ1RSX0JDXzEzIDhfVEdGX0JDXzE0ICA5X0lSX0JDXzE1IFxuICAgMzI1OTk3NDggICAgMzQyNzMxMDkgICAgMzg1MjIxNzQgICAgMzY0NzgxOTAgXG4ifQ== -->
+<pre><code> 1_CTR_BC_2  2_TGF_BC_4   3_IR_BC_5  4_CTR_BC_6  5_TGF_BC_7 
+   37966392    42302453    33300002    39401879    37716366 
+ 6_IR_BC_12 7_CTR_BC_13 8_TGF_BC_14  9_IR_BC_15 
+   32599748    34273109    38522174    36478190 </code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -568,19 +736,30 @@ dds$Treated</code></pre>
 <!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYm94cGxvdChhc3NheShkZHMpKVxuYGBgIn0= -->
 <pre class="r"><code>boxplot(assay(dds))</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>We can use the <code>vst</code> or <code>rlog</code> function from <code>DESeq2</code>to compensate for the effect of different library sizes and put the data on the log<span class="math inline">\(_2\)</span> scale. The effect is to remove the dependence of the variance on the mean, particularly the high variance of the logarithm of count data when the mean is low. For more details see the <a href="http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#count-data-transformations">DESeq2 vignette</a></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgbG9nMiBjb3VudHNcbnZzZCA8LSB2c3QoZGRzLGJsaW5kPVRSVUUpXG4jIENoZWNrIGRpc3RyaWJ1dGlvbnMgb2Ygc2FtcGxlcyB1c2luZyBib3hwbG90c1xuYm94cGxvdChhc3NheSh2c2QpLCB4bGFiPVwiXCIsIHlsYWI9XCJMb2cyIGNvdW50cyBwZXIgbWlsbGlvblwiLGxhcz0yLG1haW49XCJOb3JtYWxpc2VkIERpc3RyaWJ1dGlvbnNcIilcbiMgTGV0J3MgYWRkIGEgYmx1ZSBob3Jpem9udGFsIGxpbmUgdGhhdCBjb3JyZXNwb25kcyB0byB0aGUgbWVkaWFuIGxvZ0NQTVxuYWJsaW5lKGg9bWVkaWFuKGFzc2F5KHZzZCkpLCBjb2w9XCJibHVlXCIpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBHZXQgbG9nMiBjb3VudHNcbnZzZCA8LSB2c3QoZGRzLGJsaW5kPVRSVUUpXG5gYGAifQ== -->
 <pre class="r"><code># Get log2 counts
-vsd &lt;- vst(dds,blind=TRUE)
-# Check distributions of samples using boxplots
+vsd &lt;- vst(dds,blind=TRUE)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoidXNpbmcgJ2F2Z1R4TGVuZ3RoJyBmcm9tIGFzc2F5cyhkZHMpLCBjb3JyZWN0aW5nIGZvciBsaWJyYXJ5IHNpemVcbiJ9 -->
+<pre><code>using &#39;avgTxLength&#39; from assays(dds), correcting for library size</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBDaGVjayBkaXN0cmlidXRpb25zIG9mIHNhbXBsZXMgdXNpbmcgYm94cGxvdHNcbmJveHBsb3QoYXNzYXkodnNkKSwgeGxhYj1cIlwiLCB5bGFiPVwiTG9nMiBjb3VudHMgcGVyIG1pbGxpb25cIixsYXM9MixtYWluPVwiTm9ybWFsaXNlZCBEaXN0cmlidXRpb25zXCIpXG4jIExldCdzIGFkZCBhIGJsdWUgaG9yaXpvbnRhbCBsaW5lIHRoYXQgY29ycmVzcG9uZHMgdG8gdGhlIG1lZGlhbiBsb2dDUE1cbmFibGluZShoPW1lZGlhbihhc3NheSh2c2QpKSwgY29sPVwiYmx1ZVwiKVxuYGBgIn0= -->
+<pre class="r"><code># Check distributions of samples using boxplots
 boxplot(assay(vsd), xlab=&quot;&quot;, ylab=&quot;Log2 counts per million&quot;,las=2,main=&quot;Normalised Distributions&quot;)
 # Let&#39;s add a blue horizontal line that corresponds to the median logCPM
 abline(h=median(assay(vsd)), col=&quot;blue&quot;)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -597,21 +776,31 @@ abline(h=median(assay(vsd)), col=&quot;blue&quot;)</code></pre>
 <pre class="r"><code>plotPCA(vsd,intgroup=&quot;condition&quot;)
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>There is also an option to return the values used in the plot for further exploration and customisation. Here we join the PCA results to the meta-data (<code>sampleinfo</code>) for plotting.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmxpYnJhcnkoZ2dwbG90MilcbnBjYV9kYXRhIDwtIHBsb3RQQ0EodnNkLGludGdyb3VwPVwiVHJlYXRlZFwiLHJldHVybkRhdGEgPSBUUlVFKSAlPiUgXG4gIGRwbHlyOjpyZW5hbWUoUnVuID0gbmFtZSkgJT4lIFxuICBsZWZ0X2pvaW4oc2FtcGxlaW5mbylcblxuICBnZ3Bsb3QocGNhX2RhdGEsYWVzKHggPSBQQzEsIHkgPSBQQzIsY29sPWdyb3VwKSkgKyBnZW9tX3BvaW50KClcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmxpYnJhcnkoZ2dwbG90MilcbnBjYV9kYXRhIDwtIHBsb3RQQ0EodnNkLGludGdyb3VwPVwiVHJlYXRlZFwiLHJldHVybkRhdGEgPSBUUlVFKSAlPiUgXG4gIGRwbHlyOjpyZW5hbWUoUnVuID0gbmFtZSkgJT4lIFxuICBsZWZ0X2pvaW4oc2FtcGxlaW5mbylcbmBgYCJ9 -->
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
 pca_data &lt;- plotPCA(vsd,intgroup=&quot;Treated&quot;,returnData = TRUE) %&gt;% 
   dplyr::rename(Run = name) %&gt;% 
-  left_join(sampleinfo)
-
-  ggplot(pca_data,aes(x = PC1, y = PC2,col=group)) + geom_point()
+  left_join(sampleinfo)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiVHJlYXRlZFwiLCBcIlJ1blwiKVxuIn0= -->
+<pre><code>Joining, by = c(&quot;Treated&quot;, &quot;Run&quot;)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBnZ3Bsb3QocGNhX2RhdGEsYWVzKHggPSBQQzEsIHkgPSBQQzIsY29sPWdyb3VwKSkgKyBnZW9tX3BvaW50KClcblxuYGBgIn0= -->
+<pre class="r"><code>  ggplot(pca_data,aes(x = PC1, y = PC2,col=group)) + geom_point()
 </code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -632,6 +821,12 @@ pca_data &lt;- plotPCA(vsd,intgroup=&quot;Treated&quot;,returnData = TRUE) %&gt;
 <p>Below is an example of a PCA that might potentially worrying:-</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-output-begin eyJkYXRhIjoiSm9pbmluZywgYnkgPSBjKFwiVHJlYXRlZFwiLCBcIlJ1blwiKVxuIn0= -->
+<pre><code>Joining, by = c(&quot;Treated&quot;, &quot;Run&quot;)</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-plot-begin eyJoZWlnaHQiOjQzMi42MzI5LCJ3aWR0aCI6NzAwLCJzaXplX2JlaGF2aW9yIjowLCJjb25kaXRpb25zIjpbXX0= -->
+<p><img src="data:image/png;base64,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" /></p>
+<!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -658,11 +853,20 @@ write_tsv(file=&quot;meta_data/sampleInfo_corrected.txt&quot;)</code></pre>
 <p>Such a file is provided in the <code>raw_counts</code> folder.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY291bnRfZmlsZSA8LSBcInJhd19jb3VudHMvcmF3X2NvdW50c19tYXRyaXgudHN2XCJcbmNvdW50cyA8LSByZWFkLmRlbGltKGNvdW50X2ZpbGUpXG5oZWFkKGNvdW50cylcblxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY291bnRfZmlsZSA8LSBcInJhd19jb3VudHMvcmF3X2NvdW50c19tYXRyaXgudHN2XCJcbmNvdW50cyA8LSByZWFkLmRlbGltKGNvdW50X2ZpbGUpXG5oZWFkKGNvdW50cylcbmBgYCJ9 -->
 <pre class="r"><code>count_file &lt;- &quot;raw_counts/raw_counts_matrix.tsv&quot;
 counts &lt;- read.delim(count_file)
-head(counts)
-</code></pre>
+head(counts)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbImRhdGEuZnJhbWUiXSwibnJvdyI6NiwibmNvbCI6MTAsInN1bW1hcnkiOnsiRGVzY3JpcHRpb24iOlsiZGYgWzYgeCAxMF0iXX19LCJyZGYiOiJINHNJQUFBQUFBQUFCbTFTelU2RFFCQmVFRnFsL3FaZVBIbzJOcVdVMWw0OHRGYWpVZVBmQWIwUWJLczJJcGdXb3pmMUpYd0duOEg0Qkw2RGlVK2dYdlNvZnNEc1NnZ2t5ODU4MzN5ek03Tzd0MklabXFVeHhrYVlJdUd2d21TNTFvNWVNU3VNS1RJOGlTbHNMTnh2d0JkaGhPSFRZUmdSVSszdC9iV3krSXhzMk15Q3Ezb2pFemJybVhDdG5BVTNqQ1ZBRTFGRkxMZkFvaS8zenBqOEJPT2JLdVo4Z2ZnUDhIMTBaY0pSLzNsMU9lYnpHK0FQWVFSWWhZVCtrZmdaOEs4dzNtSmM2SWZFMzROL2dQRWJqVkR3eWllZGoxMmVnK0ZpeVluOHM2UkhUVEpxWkY5WXhVVCtvNWhYWDhEdkl2VThIQ1dSL3lzK0wvOE1QcXo5Rm1zMGRaV3E1MXowaG5TTkdvRjV6TFM5MWR3a3QyRHBkdXRnejI2MjdJcUFLdmJCMm1vSVZRblNMTU5lajRKTUVWVGx1cHFBVEs2ckM2aEdPcDFuSDdmcVhLZ2JBbHZpU3IwcXBBMHVOVk45alEzODZ4THZMUnlJZkVmVFRnK2c0enBEUGdBT2FsMG5jRW9uQStqaC9hUWtlZjh5NlBzZVJIS1Jua3hTTEExU3dQU1ZGMWJTWGV5Y1hYbm5pM3FkM3FHVWVBOVM0dTFJTVIrZUtmOVNMcFZ5NVhyZWFkL3I4ZUpkNTdqbmtqT0pscU9PUzVlRHZoZndWb0FPUzRFZk9EeE82L2d1UjZMbTJNOGZXWFJnUGYwREFBQT0ifQ== -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["ENSEMBL"],"name":[1],"type":["chr"],"align":["left"]},{"label":["X1_CTR_BC_2"],"name":[2],"type":["int"],"align":["right"]},{"label":["X2_TGF_BC_4"],"name":[3],"type":["int"],"align":["right"]},{"label":["X3_IR_BC_5"],"name":[4],"type":["int"],"align":["right"]},{"label":["X4_CTR_BC_6"],"name":[5],"type":["int"],"align":["right"]},{"label":["X5_TGF_BC_7"],"name":[6],"type":["int"],"align":["right"]},{"label":["X6_IR_BC_12"],"name":[7],"type":["int"],"align":["right"]},{"label":["X7_CTR_BC_13"],"name":[8],"type":["int"],"align":["right"]},{"label":["X8_TGF_BC_14"],"name":[9],"type":["int"],"align":["right"]},{"label":["X9_IR_BC_15"],"name":[10],"type":["int"],"align":["right"]}],"data":[{"1":"ENSG00000000003","2":"1579","3":"1547","4":"1342","5":"1704","6":"1395","7":"1264","8":"1556","9":"1370","10":"1269","_rn_":"1"},{"1":"ENSG00000000005","2":"0","3":"0","4":"0","5":"0","6":"0","7":"0","8":"0","9":"0","10":"1","_rn_":"2"},{"1":"ENSG00000000419","2":"1774","3":"1775","4":"1866","5":"1809","6":"1921","7":"1776","8":"1797","9":"1482","10":"1980","_rn_":"3"},{"1":"ENSG00000000457","2":"698","3":"617","4":"601","5":"733","6":"662","7":"537","8":"751","9":"593","10":"628","_rn_":"4"},{"1":"ENSG00000000460","2":"246","3":"309","4":"116","5":"224","6":"255","7":"108","8":"245","9":"289","10":"127","_rn_":"5"},{"1":"ENSG00000000938","2":"10","3":"5","4":"11","5":"6","6":"1","7":"2","8":"19","9":"4","10":"8","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10],"total":[10]},"rows":{"min":[10],"max":[10],"total":[6]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuTkFcbmBgYCJ9 -->
+<pre class="r"><code>NA</code></pre>
 <!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
@@ -680,38 +884,79 @@ head(counts)
 <p>The error message is telling using that the number of columns in our count data is not the same as the number of rows in our sample information. This is indeed the case.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmNvbChjb3VudHMpXG5ucm93KHNhbXBsZWluZm8pXG5gYGAifQ== -->
-<pre class="r"><code>ncol(counts)
-nrow(sampleinfo)</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmNvbChjb3VudHMpXG5gYGAifQ== -->
+<pre class="r"><code>ncol(counts)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDEwXG4ifQ== -->
+<pre><code>[1] 10</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubnJvdyhzYW1wbGVpbmZvKVxuYGBgIn0= -->
+<pre class="r"><code>nrow(sampleinfo)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDlcbiJ9 -->
+<pre><code>[1] 9</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>A workaround is to modify our counts so that the gene names appear as <em>row names</em>, and then remove the gene names column. We can use the <code>[]</code> approach from base R to extract and remove columns.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm93bmFtZXMoY291bnRzKSA8LSBjb3VudHNbLDFdXG5jb3VudHMgPC0gY291bnRzWywtMV1cblxuZGRzX2Zyb21fbWF0IDwtIERFU2VxRGF0YVNldEZyb21NYXRyaXgoY291bnRzLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xEYXRhID0gc2FtcGxlaW5mbywgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzaWduID0gflRyZWF0ZWQpXG5kZHNfZnJvbV9tYXRcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucm93bmFtZXMoY291bnRzKSA8LSBjb3VudHNbLDFdXG5jb3VudHMgPC0gY291bnRzWywtMV1cblxuZGRzX2Zyb21fbWF0IDwtIERFU2VxRGF0YVNldEZyb21NYXRyaXgoY291bnRzLCBcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjb2xEYXRhID0gc2FtcGxlaW5mbywgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZGVzaWduID0gflRyZWF0ZWQpXG5gYGAifQ== -->
 <pre class="r"><code>rownames(counts) &lt;- counts[,1]
 counts &lt;- counts[,-1]
 
 dds_from_mat &lt;- DESeqDataSetFromMatrix(counts, 
                                   colData = sampleinfo, 
-                                  design = ~Treated)
-dds_from_mat</code></pre>
+                                  design = ~Treated)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoic29tZSB2YXJpYWJsZXMgaW4gZGVzaWduIGZvcm11bGEgYXJlIGNoYXJhY3RlcnMsIGNvbnZlcnRpbmcgdG8gZmFjdG9yc1xuIn0= -->
+<pre><code>some variables in design formula are characters, converting to factors</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzX2Zyb21fbWF0XG5gYGAifQ== -->
+<pre class="r"><code>dds_from_mat</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2xhc3M6IERFU2VxRGF0YVNldCBcbmRpbTogNTc5MTQgOSBcbm1ldGFkYXRhKDEpOiB2ZXJzaW9uXG5hc3NheXMoMSk6IGNvdW50c1xucm93bmFtZXMoNTc5MTQpOiBFTlNHMDAwMDAwMDAwMDMgRU5TRzAwMDAwMDAwMDA1IC4uLlxuICBFTlNHMDAwMDAyODQ3NDcgRU5TRzAwMDAwMjg0NzQ4XG5yb3dEYXRhIG5hbWVzKDApOlxuY29sbmFtZXMoOSk6IFgxX0NUUl9CQ18yIFgyX1RHRl9CQ180IC4uLiBYOF9UR0ZfQkNfMTRcbiAgWDlfSVJfQkNfMTVcbmNvbERhdGEgbmFtZXMoNSk6IFJ1biBjb25kaXRpb24gTmFtZSBSZXBsaWNhdGUgVHJlYXRlZFxuIn0= -->
+<pre><code>class: DESeqDataSet 
+dim: 57914 9 
+metadata(1): version
+assays(1): counts
+rownames(57914): ENSG00000000003 ENSG00000000005 ...
+  ENSG00000284747 ENSG00000284748
+rowData names(0):
+colnames(9): X1_CTR_BC_2 X2_TGF_BC_4 ... X8_TGF_BC_14
+  X9_IR_BC_15
+colData names(5): Run condition Name Replicate Treated</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>However, there is an simpler approach in this case. The function includes a <code>tidy</code> argument which can be set to <code>TRUE</code> in the situation where gene names appear as the first column.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY291bnRzIDwtIHJlYWQuZGVsaW0oY291bnRfZmlsZSlcbmRkc19mcm9tX21hdCA8LSBERVNlcURhdGFTZXRGcm9tTWF0cml4KGNvdW50cywgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sRGF0YSA9IHNhbXBsZWluZm8sIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlc2lnbiA9IH5UcmVhdGVkLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpZHk9VFJVRSlcbmRkc19mcm9tX21hdFxuXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY291bnRzIDwtIHJlYWQuZGVsaW0oY291bnRfZmlsZSlcbmRkc19mcm9tX21hdCA8LSBERVNlcURhdGFTZXRGcm9tTWF0cml4KGNvdW50cywgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29sRGF0YSA9IHNhbXBsZWluZm8sIFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGRlc2lnbiA9IH5UcmVhdGVkLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHRpZHk9VFJVRSlcbmBgYCJ9 -->
 <pre class="r"><code>counts &lt;- read.delim(count_file)
 dds_from_mat &lt;- DESeqDataSetFromMatrix(counts, 
                                   colData = sampleinfo, 
                                   design = ~Treated,
-                                  tidy=TRUE)
-dds_from_mat
-</code></pre>
+                                  tidy=TRUE)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoic29tZSB2YXJpYWJsZXMgaW4gZGVzaWduIGZvcm11bGEgYXJlIGNoYXJhY3RlcnMsIGNvbnZlcnRpbmcgdG8gZmFjdG9yc1xuIn0= -->
+<pre><code>some variables in design formula are characters, converting to factors</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGRzX2Zyb21fbWF0XG5gYGAifQ== -->
+<pre class="r"><code>dds_from_mat</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiY2xhc3M6IERFU2VxRGF0YVNldCBcbmRpbTogNTc5MTQgOSBcbm1ldGFkYXRhKDEpOiB2ZXJzaW9uXG5hc3NheXMoMSk6IGNvdW50c1xucm93bmFtZXMoNTc5MTQpOiBFTlNHMDAwMDAwMDAwMDMgRU5TRzAwMDAwMDAwMDA1IC4uLlxuICBFTlNHMDAwMDAyODQ3NDcgRU5TRzAwMDAwMjg0NzQ4XG5yb3dEYXRhIG5hbWVzKDApOlxuY29sbmFtZXMoOSk6IFgxX0NUUl9CQ18yIFgyX1RHRl9CQ180IC4uLiBYOF9UR0ZfQkNfMTRcbiAgWDlfSVJfQkNfMTVcbmNvbERhdGEgbmFtZXMoNSk6IFJ1biBjb25kaXRpb24gTmFtZSBSZXBsaWNhdGUgVHJlYXRlZFxuIn0= -->
+<pre><code>class: DESeqDataSet 
+dim: 57914 9 
+metadata(1): version
+assays(1): counts
+rownames(57914): ENSG00000000003 ENSG00000000005 ...
+  ENSG00000284747 ENSG00000284748
+rowData names(0):
+colnames(9): X1_CTR_BC_2 X2_TGF_BC_4 ... X8_TGF_BC_14
+  X9_IR_BC_15
+colData names(5): Run condition Name Replicate Treated</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -736,6 +981,9 @@ dds_from_mat
 <pre class="r"><code>gtf_file &lt;- &quot;Mus_musculus.GRCm38.91.chr.gtf.gz&quot;
 file.exists(gtf_file)</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIEZBTFNFXG4ifQ== -->
+<pre><code>[1] FALSE</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>If required, we can download from the Ensembl FTP site.</p>
