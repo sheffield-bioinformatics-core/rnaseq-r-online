@@ -1,17 +1,13 @@
 if(!require(BiocManager)) install.packages("BiocManager")
 BiocManager::install(c("limma", 
-         "org.Mm.eg.db", 
+         "org.Hs.eg.db", 
          "RColorBrewer", 
-         "TxDb.Mmusculus.UCSC.mm10.knownGene",
-         "goseq",
-         "fgsea",
          "DESeq2",
          "pheatmap",
          "rmarkdown",
          "tximport",
          "clusterProfiler",
          "DOSE",
-         "pathview",
          "biomaRt",
          "dplyr",
          "ggplot2"),suppressUpdates=TRUE)

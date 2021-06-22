@@ -28,29 +28,17 @@ if (suppressPackageStartupMessages(require(DESeq2,quietly = TRUE))) {
   message("The DESeq2 package has NOT been installed. Please try typing the command 'BiocManager::install('DESeq2')' again")
 } 
 
-if (suppressPackageStartupMessages(require(org.Mm.eg.db,quietly = TRUE))) {
-  message("The org.Mm.eg.db package has been installed")
+if (suppressPackageStartupMessages(require(org.Hs.eg.db,quietly = TRUE))) {
+  message("The org.Hs.eg.db package has been installed")
 } else {
-  message("The org.Mm.eg.db package has NOT been installed. Please try typing the command 'BiocManager::install('org.Mm.eg.db')' again")
+  message("The org.Hs.eg.db package has NOT been installed. Please try typing the command 'BiocManager::install('org.Hs.eg.db')' again")
 } 
 
-
-if (suppressPackageStartupMessages(require(TxDb.Mmusculus.UCSC.mm10.knownGene,quietly = TRUE))) {
-  message("The TxDb.Mmusculus.UCSC.mm10.knownGene package has been installed")
-} else {
-  message("The TxDb.Mmusculus.UCSC.mm10.knownGene package has NOT been installed. Please try typing the command 'BiocManager::install('TxDb.Mmusculus.UCSC.mm10.knownGene')' again")
-} 
 
 if (suppressPackageStartupMessages(require(pheatmap,quietly = TRUE))) {
   message("The pheatmap package has been installed")
 } else {
   message("The pheatmap package has NOT been installed. Please try typing the command 'install.packages('pheatmap')' again")
-} 
-
-if (suppressPackageStartupMessages(require(goseq,quietly = TRUE))) {
-  message("The goseq package has been installed")
-} else {
-  message("The goseq package has NOT been installed. Please try typing the command 'BiocManager::install('goseq')' again")
 } 
 
 
