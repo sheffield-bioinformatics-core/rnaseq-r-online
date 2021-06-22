@@ -267,6 +267,7 @@ colSums(assay(dds))
 
 ![](images/lib_size.png)
 
+
 ### Visualising count distributions
 
 We typically use a `boxplot` to visualise difference the distributions of the columns of a numeric data frame. Applying the `boxplot` function to the raw counts from our dataset reveals something about the nature of the data; the distributions are dominated by a few genes with very large counts.
