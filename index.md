@@ -14,6 +14,10 @@ editor_options:
 
 # About 
 
+**Please note that these materials have been updated from the workshops delivered in April / May 2021. If you are looking for these materials, please see https://sbc.shef.ac.uk/workshops/rnaseq-r-online_v1/**
+
+The updates include using a human cancer dataset and reducing the length of the workshop from four to three sessions.
+
 ## Pre-material
 
 We will assume you have a basic familiarity with the R language and Rstudio and are reasonably confident in performing the following tasks:-
@@ -114,8 +118,8 @@ source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-r
 
 - Which statistical tests are appropriate for RNA-seq data
 - Using the DESeq2 package to detect differential expression
-- Using a venn diagram to compare gene lists
-
+- Using annotation databases to map between gene identifers
+- Visualisation of differential expression results
 
 ## Materials
 
@@ -126,14 +130,13 @@ source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-r
 
 ## Learning outcomes
 
-- Using annotation databases to map between gene identifers
 - Construction and interpretation of common visualisations
     + scatter plots
     + volcano plots
     + MA-plots 
     + heatmaps
 - Customisation of plots
-
+- Methodology behind gene set testing and enrichment analysis
 
 
 ## Materials
@@ -141,16 +144,3 @@ source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-r
 - [html](session3.nb.html)
 
 
-
-# Session 4 - Pathways and further downstream analysis
-
-## Learning outcomes
-
-- Introduction to assessment
-- Using annotation packages to query pathways
-- Methodology behind gene set testing and enrichment analysis
-
-
-## Materials
-
-- [html](session4.nb.html)
