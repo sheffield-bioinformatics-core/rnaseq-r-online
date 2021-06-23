@@ -124,15 +124,17 @@ For instance, we could hypothesise that Extra-Cellular Matrix (ECM) genes play a
 
 ## Heatmaps
 
-You may have already seen the use of a heatmap as a quality assessment tool to visualise the relationship between samples in an experiment. Another common use-case for such a plot is to visualise the results of a differential expression analysis.
-
-Here we will take the top 10 genes from the differential expression analysis and produce a heatmap with the `pheatmap` package. We can take advantage of the fact the our counts table contains Ensembl gene names in the rows. Standard subset operations in R can then be used.
-
-The default colour palette goes from low expression in blue to high expression in red, which is a good alternative to the traditional red/green heatmaps which are not suitable for those with forms of colour-blindness.
+You may have already seen the use of a heatmap as a quality assessment tool to visualise the relationship between samples in an experiment. Another common use-case for such a plot is to visualise the results of a differential expression analysis. Although `ggplot2` has a `geom_tile` function to make heatmaps, specialised packages such as `pheatmaps` offer more functionality such as clustering the samples.
 
 The counts we are visualising are the *variance-stablised* counts, which are more appropriate for visualisation.
 
-Although `ggplot2` has a `geom_tile` function to make heatmaps, specialised packages such as `pheatmaps` offer more functionality such as clustering the samples.
+Here we will take the top 10 genes from the differential expression analysis and produce a heatmap with the `pheatmap` package. We can take advantage of the fact the our counts table contains Ensembl gene names in the rows. Standard subset operations in R can then be used.
+
+
+The default colour palette goes from low expression in blue to high expression in red, which is a good alternative to the traditional red/green heatmaps which are not suitable for those with forms of colour-blindness.
+
+
+
 
 ```{r}
 dds <- readRDS("Robjects/dds_BACKUP.rds")
@@ -144,6 +146,9 @@ dds <- readRDS("Robjects/dds_BACKUP.rds")
 library(pheatmap)
 top_genes <- results_tgf$ENSEMBL[1:10]
 vsd <- vst(dds)
+
+# top_genes is a vector containing ENSEMBL names of the genes we want to see in the heatmap
+
 pheatmap(assay(vsd)[top_genes,])
 ```
 
@@ -195,7 +200,14 @@ res_with_var <- mutate(results_tgf, GeneVar = rowSds(assay(vsd))) %>%
   + First, re-arrange the table `res_with_var` from above by decreasing `GeneVar`
   + Identify the `ENSEMBL` IDs for the first 100 rows. The `slice` function from `dplyr` might be useful here
   + Use these 100 IDs in the heatmap instead of the most significant genes that we used previously
+  + you will need to use code something like this, where `genes_to_plot` is the ENSEMBL IDs that you identify
 
+```{r eval=FALSE}
+pheatmap(assay(vsd)[genes_to_plot,],
+         annotation_col = sampleInfo,
+         scale="row")
+```
+  
 </div>
 
 # Pathways analysis

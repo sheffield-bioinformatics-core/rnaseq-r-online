@@ -13,7 +13,8 @@ results_tgf <- readRDS("Robjects/results_TGF_vs_CTR_annotated_BACKUP.rds")
 ## Read the counts that we produced previously
 dds <- readRDS("Robjects/dds_BACKUP.rds")
 ```
-# Exercise
+
+# Exercise: Volcano plot
 
 The standard volcano plot can be produced with the `ggplot2` package
 
@@ -42,4 +43,106 @@ results_tgf %>%
   mutate(ECM_Gene = ENSEMBL %in% ecm_ids) %>% 
   ggplot(aes(x = log2FoldChange, y = -log10(padj),col=ECM_Gene)) + geom_point()
 ```
+The default colouring does not distinguish the ECM genes as much as we might like. We could manually adjust it so that genes belonging to the pathway are coloured in red, and the rest in black. The transparency (`alpha`) can also be adjusted. Below is a suggestion.
+
+```{r}
+results_tgf %>% 
+  mutate(ECM_Gene = ENSEMBL %in% ecm_ids) %>% 
+  ggplot(aes(x = log2FoldChange, y = -log10(padj),col=ECM_Gene,alpha=ECM_Gene)) + geom_point() + scale_color_manual(values=c("black","red")) + scale_alpha_manual(values=c(0.2,1))
+```
+# Exercise: Heatmap
+
+The tricky part of making a heatmap is deciding which genes to include. The gene names have to be in ENSEMBL format, as the count matrix we will be plotting has ENSEMBL names in the rows.
+
+```{r}
+# The pheatmap library is needed to make the heatmap
+
+library(pheatmap)
+
+#first, get variance-stablised counts
+
+vsd <- vst(dds)
+sampleInfo <- as.data.frame(colData(dds)[,c("condition","Treated")])
+
+# create a new table that includes gene variability
+
+res_with_var <- mutate(results_tgf, GeneVar = rowSds(assay(vsd))) %>% 
+  filter(!is.na(padj))
+
+# arrange by the new column and extract ENSEMBL ID of the first 100 rows
+
+genes_to_plot <- arrange(res_with_var, desc(GeneVar)) %>% 
+  dplyr::slice(1:100) %>% 
+  pull(ENSEMBL)
+
+
+```
+
+```{r fig.width=12}
+
+pheatmap(assay(vsd)[genes_to_plot,],
+         annotation_col = sampleInfo,
+         scale="row")
+```
+
+```{r fig.width=12}
+gene_labels <- arrange(res_with_var, desc(GeneVar)) %>% 
+  dplyr::slice(1:100) %>% 
+  pull(SYMBOL)
+
+pheatmap(assay(vsd)[genes_to_plot,],
+         annotation_col = sampleInfo,
+         labels_row = gene_labels,
+         scale="row")
+
+```
+
+# Exercise: Pathways
+
+In order to use the `enrichKEGG` function, we will have to define a set of enriched genes in terms of their `ENTREZID` (instead of `ENSEMBL`)
+
+```{r}
+sigGenesEntrez <- results_tgf %>% 
+  filter(padj < 0.05, !is.na(ENTREZID)) %>% pull(ENTREZID)
+
+```
+
+Make sure you check the help for `enrichKEGG`, as it uses different argument names
+
+```{r}
+library(clusterProfiler)
+enrich_kegg <- enrichKEGG(sigGenesEntrez,
+                       organism = "hsa")
+as.data.frame(enrich_kegg)
+```
+The same plots can be created from the results. Here is the dot plot.
+
+```{r fig.width=12}
+dotplot(enrich_kegg)
+```
+and the upset plot.
+
+```{r fig.width=12}
+enrichplot::upsetplot(enrich_kegg)
+```
+
+For the GSEA analysis using KEGG we can use the same set of ranked statistics, but make sure to name them according to ENTREZID
+
+```{r}
+ranked_genes <- results_tgf %>% 
+  arrange(desc(stat)) %>% 
+  filter(!is.na(stat))
+  
+geneList <- pull(ranked_genes, stat)
+names(geneList) <- pull(ranked_genes, ENTREZID)
+```
+
+Again, make sure to check the arguments for `gseKEGG`. 
+
+```{r}
+gse_kegg <- gseKEGG(geneList = geneList,
+                    organism = "hsa")
+as.data.frame(gse_kegg)
+```
+
 
