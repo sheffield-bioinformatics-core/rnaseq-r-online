@@ -464,7 +464,7 @@ download.file(PASTE_LINK_FROM_ENSEMBL_HERE,destfile = gtf_file)
 
 ### Creating a transcript database
 
-The Bioconducor website provides many pre-built transcript databases for some organisms (Human, Mouse, Rat etc)  which provide transcript definitions and allow users to query the locations of particular genes, exons and other genomic features. You may find a pre-built package that already has the transcript locations required to create the transcript mapping file. Check out the annotation section of the Bioconductor website - http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData and look for packages starting `TxDb...`
+The Bioconductor website provides many pre-built transcript databases for some organisms (Human, Mouse, Rat etc)  which provide transcript definitions and allow users to query the locations of particular genes, exons and other genomic features. You may find a pre-built package that already has the transcript locations required to create the transcript mapping file. Check out the annotation section of the Bioconductor website - http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData and look for packages starting `TxDb...`
 
 However, it is quite easy to build such a database if we have a `gtf` file using the `GenomicFeatures` infrastructure.
 
