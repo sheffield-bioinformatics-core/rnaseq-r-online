@@ -62,9 +62,10 @@ Measuring gene expression on a genome-wide scale has become common practice over
 
 There are many steps involved in analysing an RNA-Seq experiment. 
 
-![](https://databeauty.com/figures/2016-09-13-RNA-seq-analysis/rna_seq_workflow.png)
+![](https://hbctraining.github.io/Intro-to-rnaseq-hpc-gt/img/alignmentfree_workflow_aug2017.png)
 
-Workflow image from Ting-you Wang's [RNA-seq data analysis page](https://databeauty.com/blog/tutorial/2016/09/13/RNA-seq-analysis.html)
+
+Workflow image from Harvard Bioinformatics Core
 
 Analysing an RNAseq experiment begins with sequencing reads. Traditionally, these are aligned to a reference genome, then the number of reads mapped to each gene can be counted. More modern approaches such as `salmon` quantify transcripts directly and do not require genome alignment to have taken place. Either approach results in a table of counts, which is what we perform statistical analyses on in R. While mapping and counting are important and necessary tasks, they are typically performed in languages other than R and so outside the scope of this course.
 
@@ -80,7 +81,7 @@ In these sessions will be starting from the count data and getting straight into
 
 We will be following a workflow that uses the `DESeq2` package. An alternative and well-respected workflow is based on the [edgeR and limma packages](https://bioconductor.github.io/BiocWorkshops/rna-seq-analysis-is-easy-as-1-2-3-with-limma-glimma-and-edger.html).
 
-### Mouse mammary gland dataset
+### Example dataset
 
 The data for this tutorial comes from the paper, [*Induction of fibroblast senescence generates a non-fibrogenic myofibroblast phenotype that differentially impacts on cancer prognosis.*](http://europepmc.org/article/MED/27992856). 
 
@@ -123,7 +124,7 @@ sampleinfo
 
 ## Output from salmon
 
-Eventually we will be using the DESeq2 Bioconductor package for differential expression analysis. The precise method of importing your count data into DESeq2 depends on the workflow used to generate the counts. The [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data) gives many different use-cases. For instance, if you have your counts in a single file (e.g. if following our Galaxy tutorials) you can follow [this example](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#countmat)
+Eventually we will be using the DESeq2 Bioconductor package for differential expression analysis. The specific method of importing your count data into DESeq2 depends on the workflow used to generate the counts. The [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data) gives many different use-cases. For instance, if you have your counts in a single file (e.g. if following our Galaxy tutorials) you can follow [this example](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#countmat)
 
 ### Overview
 
@@ -155,11 +156,12 @@ The function we are going to use to import the salmon files requires a `vector` 
 
 ```{r}
 dirs <- list.files("salmon_quant/")
-quant_files <- list.files("salmon_quant/",pattern="quant.sf.gz",recursive = TRUE,full.names = TRUE)
+quant_files <- list.files("salmon_quant/",
+                          pattern="quant.sf.gz",
+                          recursive = TRUE,
+                          full.names = TRUE)
 names(quant_files) <- dirs
 quant_files
-
-
 ```
 
 ### Inspecting the salmon output
@@ -185,11 +187,13 @@ head(tx2gene)
 
 
 
-We can import our dataset with the `tximport` package. The `ignoreTxVersion` argument needs to be set to `TRUE`; you might have noticed that the transcript names in the quant files have a version number at the end `e.g. .1`, so won't match the transcript names in the `tx2gene` table.
+We can import our dataset with the `tximport` package. 
 
 ```{r}
 library(tximport)
-txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
+txi <- tximport(quant_files,
+                type="salmon",
+                tx2gene = tx2gene)
 ```
 
 The resulting object is a "*list*" structure in R which contains a number of components that we can access using a `$` operator
@@ -258,7 +262,7 @@ colSums(assay(dds))
 ```
 
 
-# Exercise
+## Exercise
 
 <div class="exercise">
 - Use an appropriate function from `dplyr` to add a column containing the number of reads for each sample to the `sampleinfo` data frame.
@@ -322,7 +326,7 @@ pca_data <- plotPCA(vsd,intgroup="Treated",returnData = TRUE) %>%
 
 ```
 
-# Exercise
+## Exercise
 
 <div class="exercise">
 
@@ -338,18 +342,7 @@ In our unsupervised analysis we should see that the main source of variation is 
 
 Below is an example of a PCA that might potentially worrying:-
 
-
-```{r echo=FALSE}
-library(ggrepel)
-plotPCA(vsd,intgroup="Treated",returnData = TRUE) %>% 
-  dplyr::rename(Run = name) %>% 
-  left_join(sampleinfo) %>% 
-  dplyr::rename(Batch = condition) %>% 
-  dplyr::mutate(condition = Replicate) %>% 
-  mutate(Batch = forcats::fct_recode(Batch, "1" = "CTR", "2" = "TGF","3"= "IR")) %>% 
-  mutate(condition = forcats::fct_recode(as.factor(condition), "CTR"="1", "TGF"="2","IR"="3")) %>% 
-  ggplot(aes(x = PC1, y = PC2,col=Batch,label=condition)) + geom_point() + geom_text_repel(col="black") + ggtitle("Worrying PCA Example")
-```
+![](images/batch_effect.png)
 
 
 ### Correcting the sample information
@@ -365,6 +358,7 @@ sampleinfo %>%
 mutate(condition = str_to_upper(condition)) %>% 
 write_tsv(file="meta_data/sampleInfo_corrected.txt")
 ```
+
 
 
 # Count matrix input

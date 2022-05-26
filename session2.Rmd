@@ -101,7 +101,7 @@ de_treated
 
 
 
-The results of the analysis are not iHsediately accessible, but can be obtained using the `results` function. Each row is a particular gene measured in the study (i.e. all genes in the organism being studied) and each column reports some aspect of the differential expression analysis for that gene. Note that **all genes** are reported. At this stage the gene identifiers are not very informative, something we will fix in the next section. Furthermore, the `results` function displays results in a format which is not compatible with standard data manipulation tools (i.e. `tidyverse`), so we will have to convert.
+The results of the analysis are not immediately accessible, but can be obtained using the `results` function. Each row is a particular gene measured in the study (i.e. all genes in the organism being studied) and each column reports some aspect of the differential expression analysis for that gene. Note that **all genes** are reported. At this stage the gene identifiers are not very informative, something we will fix in the next section. Furthermore, the `results` function displays results in a format which is not compatible with standard data manipulation tools (i.e. `tidyverse`), so we will have to convert.
 
 ```{r}
 results(de_treated)
@@ -109,33 +109,26 @@ results(de_treated)
 
 # Processing the DE results using tidyverse
 
-The output can be converted into a data frame and manipulated in the usual manner. It is recoHsended to use `dplyr` to manipulate the data frames with the standard set of operations detailed on the [dplyr cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
+The output can be converted into a data frame and manipulated in the usual manner. It is recommended to use `dplyr` to manipulate the data frames with the standard set of operations detailed on the [dplyr cheatsheet](https://www.rstudio.com/wp-content/uploads/2015/02/data-wrangling-cheatsheet.pdf)
 
 - `select` to pick which columns to display
 - `filter` to restrict the rows
 - `mutate` to add new variables to the data frame
 - `arrange` to order the data frame according to values of a column
 
-However, `dpylr` does not like data frame that have rownames. We can use the `rownames_to_column` function from the `tibble` package to add an extra column that contains the Ensembl gene IDs.
-
 The `%>%` symbol refers to the [piping operation](https://sbc.shef.ac.uk/r-online/part2.nb.html#%E2%80%9CPiping%E2%80%9D) in R, which is a way of chaining operations together. 
 
 ```{r warning=FALSE, message=FALSE}
 library(dplyr)
-library(tibble)
- results(de_treated) %>%
-  as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  
+ results(de_treated, tidy=TRUE)
 
 ```
 
 We can sort the rows by adjusted p-value and then print the first 10 rows.
 
 ```{r}
- results(de_treated) %>%
-  as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  %>% 
-arrange(padj) %>%  
+results(de_treated,tidy=TRUE) %>%
+  arrange(padj) %>%  
   head(n=10)
 ```
 
@@ -143,18 +136,15 @@ Or we can sort the rows and then write the resulting data frame to a file.
 
 ```{r}
 dir.create("de_analysis",showWarnings = FALSE)
- results_treated <- results(de_treated) %>%
-  as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  %>% 
-arrange(padj)
- 
-  write_csv(results_treated,"de_analysis/treated_Y_vs_N_DESeq_all.csv")
+ results(de_treated,tidy=TRUE) %>%
+  arrange(padj) %>% 
+   write_csv("de_analysis/treated_Y_vs_N_DESeq_all.csv")
 ```
 
 Filtering to the differentially-expressed genes can be achieved using the `filter` function from `dplyr`.
 
 ```{r}
- results_treated  %>%  
+ results(de_treated,tidy=TRUE) %>%
   filter(padj < 0.05) %>% 
   write.csv("de_analysis/treated_Y_vs_N_DESeq_sig.csv")
 ```
@@ -169,7 +159,8 @@ saveRDS(de_treated, file="Robjects/de_treated.rds")
 We can discover how many differentially-expressed genes (at a particular p-value cut-off) using the `count` function
 
 ```{r}
-count(results_annotated, padj < 0.05)
+results(de_treated,tidy=TRUE) %>%
+count(padj < 0.05)
 ```
 
 Another overview of the results is to use the `plotMA` function. Each point on this plot represents and individual gene with the x- and y-axes being the overall expression level and magnitude of difference respectively. Significant genes are automatically highlighted. The fanning effect at low expression levels is often seen due to high relative fold-change at low expression levels. 
@@ -233,20 +224,39 @@ For a factor with more than 2 groups, the `contrast` argument can be used to cha
 dds_condition<- dds
 design(dds_condition) <- ~condition
 de_condition <- DESeq(dds_condition)
-results(de_condition, contrast = c("condition","IR","CTR"))  %>%
-  as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  %>% 
-arrange(padj) 
+results(de_condition, contrast = c("condition","IR","CTR"),tidy=TRUE)  %>%
+  arrange(padj) 
 ```
 
 ```{r}
-results(de_condition, contrast = c("condition","IR","TGF")) %>%
-  as.data.frame %>% 
-  rownames_to_column("ENSEMBL")  %>% 
-arrange(padj) 
+results(de_condition, contrast = c("condition","IR","TGF"),tidy=TRUE) %>%
+  arrange(padj) 
 ```
 
 
+# More complex designs
+
+The examples we have used so far have performed a differential expression analysis using a named column in the `colData` object. The `DESeq2` package is capable of performing more complex analyses that can take multiple factors into consideration at the same time; so-called "multi-factor designs"
+
+- [Multi-factor designs in DESeq2](http://bioconductor.org/packages/devel/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#multi-factor-designs)
+
+The use of such a design could be motivated by discovering sources of technical variation in our data that might obscure the biological differences we would like to compare. e.g.
+
+![](images/batch_effect.png)
+
+In the example image above the main source of variation is the batch in which the samples were sequenced. A multi-factor analysis to compare the various conditions, but "correct" for differences in batch, would be as follows.
+
+```{r eval=FALSE}
+### Don't run this. It's just a code example
+design(MY_DATA) <- ~ batch + condition
+```
+
+Likewise, if we have different treatments applied to difference cell-lines, but the main source of variation is the cell line (as in Weekly Exercise 4), the following could be used.
+
+```{r eval=FALSE}
+### Don't run this. It's just a code example
+design(MY_DATA) <- ~cell_line + treatment
+```
 
 
 
@@ -332,7 +342,7 @@ AnnotationDbi::select(org.Hs.eg.db, keys="ENSG00000158258",keytype = "ENSEMBL",c
 To annotate our results, we definitely want gene symbols and perhaps the full gene name. Let's build up our annotation information into a new data frame using the `select` function.
 
 ```{r}
-anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_treated$ENSEMBL,
+anno <- AnnotationDbi::select(org.Hs.eg.db,keys=rownames(dds),
               columns=c("SYMBOL","GENENAME"),
               keytype="ENSEMBL")
 # Have a look at the annotation
@@ -343,13 +353,13 @@ However, we have a problem that the resulting data frame has more rows than our 
 
 ```{r}
 dim(anno)
-dim(results_treated)
+dim(dds)
 ```
 
 Such duplicated entries can be identified using the `duplicated` function. Fortunately, there are not too many so hopefully we won't lose too much information if we discard the entries that are duplicated. The first occurrence of the duplicated ID will still be included in the table.
 
 ```{r}
-anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_treated$ENSEMBL,
+anno <- AnnotationDbi::select(org.Hs.eg.db,keys=rownames(dds),
             columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
             keytype="ENSEMBL") %>% 
 filter(!duplicated(ENSEMBL))
@@ -360,7 +370,9 @@ dim(anno)
 We can bind in the annotation information to the `results` data frame. 
 
 ```{r}
-results_annotated <- left_join(results_treated, anno,by="ENSEMBL") 
+results_annotated <- results(de_treated,tidy=TRUE) %>% 
+  left_join(anno, by=c("row"="ENSEMBL"))
+
 head(results_annotated)
 ```
 
@@ -417,7 +429,7 @@ colnames(test_data) <- c("SampleA","SampleB")
 test_data
 ```
 
-Firstly, an "average" or reference sample is created that represents the counts on a typical sample in the dataset. The *geometric mean* is used rather than the *arithmetic* mean. In other words the individual counts are multiplied rather than suHsed and the measure should be more robust to outliers.
+Firstly, an "average" or reference sample is created that represents the counts on a typical sample in the dataset. The *geometric mean* is used rather than the *arithmetic* mean. In other words the individual counts are multiplied rather than summed and the measure should be more robust to outliers.
 
 
 ```{r}
