@@ -10,4 +10,6 @@ BiocManager::install(c("limma",
          "DOSE",
          "biomaRt",
          "dplyr",
+          "stringr",
+         "tidyr",
          "ggplot2"),suppressUpdates=TRUE)
