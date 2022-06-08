@@ -377,7 +377,7 @@ The Bioconductor package have the convenience of being able to make queries offl
 
 The first step is to find the name of a database that you want to connect to.
 
-```{r}
+```{r eval=FALSE}
 library(biomaRt)
 listMarts()
 ensembl=useMart("ENSEMBL_MART_ENSEMBL")
@@ -385,13 +385,13 @@ ensembl=useMart("ENSEMBL_MART_ENSEMBL")
 listDatasets(ensembl) %>% filter(grepl("Human",description))
 ```
 
-```{r}
+```{r eval=FALSE}
 ensembl = useDataset("hsapiens_gene_ensembl", mart=ensembl)
 ```
 
 Queries to `biomaRt` are constructed in a similar way to the queries we performed with the `org.Hs.eg.db` package. Instead of `keys` we have `filters`, and instead of `columns` we have attributes. The list of acceptable values is much more comprehensive that for the `org.Hs.eg.db` package.
 
-```{r}
+```{r eval=FALSE}
 listFilters(ensembl) %>% 
     filter(grepl("ensembl",name))
 ```
@@ -404,7 +404,7 @@ listAttributes(ensembl) %>%
 
 An advantage over the `org..` packages is that positional information can be retrieved
 
-```{r}
+```{r eval=FALSE}
 attributeNames <- c('ensembl_gene_id', 'entrezgene_id', 'external_gene_name', "chromosome_name","start_position","end_position")
 
 getBM(attributes = attributeNames,
