@@ -43,10 +43,8 @@ After this workshop the successful learner will have a practical understanding o
 
 - Pre-written *markdown* and compiled HTML files
   + links from the google doc
-- Live sessions going through the markdown
+- Live-teaching sessions to create a new markdown to document the analysis
   + including "breakout sessions" for exercise and questions
-- Recordings made available
-  + links from the google doc
 
 # Learning objectives - Session 1
 
