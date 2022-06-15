@@ -38,11 +38,14 @@ Note that although we spent some time looking at the quality of our data , these
 library(tximport)
 library(DESeq2)
 library(readr)
-dirs <- list.files(file.path("salmon_quant/"))
-quant_files <- paste0("salmon_quant/",dirs,"/quant.sf.gz")
+dirs <- list.files("salmon_quant/")
+quant_files <- list.files("salmon_quant/",
+                          pattern="quant.sf.gz",
+                          recursive = TRUE,
+                          full.names = TRUE)
 names(quant_files) <- dirs
 
-tx2gene <- read.csv("tx2gene.csv")
+tx2gene <- read_csv("tx2gene.csv",col_names = FALSE)
 
 txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
 
