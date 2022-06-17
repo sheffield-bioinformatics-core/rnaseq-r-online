@@ -1,6 +1,7 @@
 ---
 title: "Analysis of RNA-seq data in R"
 author: "Module Coordinator Mark Dunning"
+date: '`r format(Sys.time(), "Last modified: %d %b %Y")`'
 output: 
   html_notebook: 
     toc: yes
@@ -21,9 +22,10 @@ library(dplyr)
 
 
 - Construction and interpretation of common visualisations for RNA-seq
-    + scatter plots
     + volcano plots
     + heatmaps
+- Customising plots to show gene sets of interest
+- Rationale behind over-representation and enrichment analyses
 - Identifying enriched and over-represented pathways
 
 We can now have a list of genes ordered according to their evidence for being differentially-expressed. You should have saved a `results_TGF_vs_CTR_annotated.rds` object in the previous session. 
