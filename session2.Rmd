@@ -124,7 +124,6 @@ The `%>%` symbol refers to the [piping operation](https://sbc.shef.ac.uk/r-onlin
 ```{r warning=FALSE, message=FALSE}
 library(dplyr)
  results(de_treated, tidy=TRUE)
-
 ```
 
 We can sort the rows by adjusted p-value and then print the first 10 rows.
@@ -156,7 +155,6 @@ It is also a good idea to save the results object itself so we can re-use later.
 
 ```{r}
 saveRDS(de_treated, file="Robjects/de_treated.rds")
-
 ```
 
 We can discover how many differentially-expressed genes (at a particular p-value cut-off) using the `count` function
@@ -254,7 +252,7 @@ In the example image above the main source of variation is the batch in which th
 design(MY_DATA) <- ~ batch + condition
 ```
 
-Likewise, if we have different treatments applied to difference cell-lines, but the main source of variation is the cell line (as in Weekly Exercise 4), the following could be used.
+Likewise, if we have different treatments applied to difference cell-lines, but the main source of variation is the cell line the following could be used.
 
 ```{r eval=FALSE}
 ### Don't run this. It's just a code example

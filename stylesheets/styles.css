@@ -11,26 +11,26 @@ max-width: 900px;
 }
 
 h1 {
-    color: rgb(0, 159, 218);
+    color: rgb(68, 0, 153);
     font-size: 200%;
     font-weight: bold;
 }
 
 
 h2 {
-    color: rgb(31, 20, 93);
+    color: rgb(68, 0, 153);
     font-size: 150%;
     font-weight: bold;
 }
 
 h3 {
-    color: rgb(31, 20, 93);
+    color: rgb(68, 0, 153);
     font-size: 125%;
     font-weight: bold;
 }
 
 h4 {
-    color: rgb(31, 20, 93);
+    color: rgb(68, 0, 153);
     font-size: 100%;
     font-weight: bold;
     font-style: italic;
@@ -45,21 +45,23 @@ h4 {
     font-family: Calibri, helvetica, sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgb(249,227,0);
+    background-color: rgb(68,0,153);
+    color: white;
 }
 
 .information{
     font-family: Calibri, helvetica, sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgb(190,214,0);
+    background-color: rgb(102,61,179);
+    color: white;
 }
 
 .warning{
     font-family: Calibri, helvetica, sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgb(209,0,116);
+    background-color: rgb(255,99,113);
 }
 
 

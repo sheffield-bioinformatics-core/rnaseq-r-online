@@ -68,16 +68,14 @@ Workflow image from Harvard Bioinformatics Core
 Analysing an RNAseq experiment begins with sequencing reads. Traditionally, these are aligned to a reference genome, then the number of reads mapped to each gene can be counted. More modern approaches such as `salmon` quantify transcripts directly and do not require genome alignment to have taken place. Either approach results in a table of counts, which is what we perform statistical analyses on in R. While mapping and counting are important and necessary tasks, they are typically performed in languages other than R and so outside the scope of this course.
 
 <div class="information">
-If you want to know more about genome alignment and command-line tools, feel free to check out our workshop on this topic in your own time
+If you want to know more about genome alignment and command-line tools, feel free to check out our workshop on this topic, or the salmon documentation in your own time
 
-[https://sbc.shef.ac.uk/training/command-line-2020-02-12/](https://sbc.shef.ac.uk/training/command-line-2020-02-12/)
-</div>
-
-In these sessions will be starting from the count data and getting straight into the analysis.
-
+- [https://sbc.shef.ac.uk/training/command-line-2020-02-12/](https://sbc.shef.ac.uk/training/command-line-2020-02-12/)
 - [https://salmon.readthedocs.io/en/latest/salmon.html](Documentation for salmon)
 
-We will be following a workflow that uses the `DESeq2` package. An alternative and well-respected workflow is based on the [edgeR and limma packages](https://bioconductor.github.io/BiocWorkshops/rna-seq-analysis-is-easy-as-1-2-3-with-limma-glimma-and-edger.html).
+</div>
+
+We will be following a workflow that uses the `DESeq2` package. An alternative and, well-respected workflow, is based on the [edgeR and limma packages](https://bioconductor.github.io/BiocWorkshops/rna-seq-analysis-is-easy-as-1-2-3-with-limma-glimma-and-edger.html).
 
 ### Example dataset
 
