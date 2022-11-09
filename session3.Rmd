@@ -11,9 +11,8 @@ editor_options:
   chunk_output_type: inline
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE,fig.width = 12,message=FALSE,warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning=FALSE)
 library(dplyr)
-
 ```
 
 
@@ -41,7 +40,6 @@ If you did not save the results from comparing `TGF` to `CTR`, you can use an ob
 ```{r}
 library(DESeq2)
 results_tgf <- readRDS("Robjects/results_TGF_vs_CTR_annotated_BACKUP.rds")
-
 ```
 
 
