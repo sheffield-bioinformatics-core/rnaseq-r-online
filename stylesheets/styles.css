@@ -10,6 +10,11 @@ body .main-container {
 max-width: 900px;
 }
 
+a:link { 
+  color: rgb(68, 0, 153); 
+  text-decoration: underline;
+}
+
 h1 {
     color: rgb(68, 0, 153);
     font-size: 200%;
@@ -45,25 +50,31 @@ h4 {
     font-family: Calibri, helvetica, sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgb(68,0,153);
-    color: white;
+    background-color: rgb(154,219,232);
+    color: rgb(68, 0, 153);
+
 }
 
 .information{
     font-family: Calibri, helvetica, sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgb(102,61,179);
-    color: white;
+    background-color: rgb(154,219,232);
+    color: rgb(68, 0, 153);
+    a:link { color: white; }
 }
 
 .warning{
     font-family: Calibri, helvetica, sans-serif;
     width: 100%;
     height: 100%;
-    background-color: rgb(255,99,113);
+    background-color: rgb(154,219,232);
+    color: rgb(68, 0, 153);
+    a:link { color: white; }
 }
 
+div#information a:link { color: white; }
+div#warning a:link { color: white; }
 
 .list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
     background-color: rgb(55, 56, 149);

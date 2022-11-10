@@ -207,7 +207,7 @@ design(dds_condition) <- ~...
 
 # Changing the direction of the contrast
 
-In this initial analysis `DESeq2` has automatically decided which member of our sample groups to use as our baseline (`CTR` in this case) so that the log2 fold changes are reported with a positive value meaning higher expression in Treated. If we want to change this behaviour we can change the `contrast` argument in the `results` function
+In this initial analysis `DESeq2` has automatically decided which member of our sample groups to use as our baseline (`CTR` in this case). If the log2 fold changes has a positive value this means higher expression in `Treated` sample. We can alter this by changing the `contrast` argument in the `results` function
 
 
 ```{r eval=FALSE}
@@ -217,9 +217,8 @@ results(de_treated, contrast=c("Treated","Y","N"))
 results(de_treated, contrast=c("Treated","N","Y"))
 ```
 
-If we change to performing differential expression analysis on the `condition` variable then there are various contrasts that can be made; `IR` vs `CTR`, `TGF` vs `CTR` etc. When the `results` function is run, the table that is displayed is for the contrast `TGF vs CTR`. The `resultsNames` function can tell us which other contrasts we can access.
+If we want to perform differential expression analysis on the `condition` variable then there are various contrasts that can be made; `IR` vs `CTR`, `TGF` vs `CTR` etc. When the `results` function is run with no `contrast` argument specified, the table that is displayed is for the contrast `TGF vs CTR`. The `resultsNames` function can tell us which other contrasts we can access.
 
-For a factor with more than 2 groups, the `contrast` argument can be used to change the output.
 
 ```{r }
 dds_condition<- dds
@@ -263,11 +262,9 @@ design(MY_DATA) <- ~cell_line + treatment
 
 # Adding annotation to the DESeq2 results
 
-We would love to share this list with our collaborators, or search for our favourite gene in the results. However, the results are not very useful in there current form as each row is named according to an *Ensembl* identifier. Whilst gene symbols are problematic and can change over time, they are the names that are most recognisable and make the results easier to navigate.
+We would love to share these results with our collaborators, or search for our favourite gene in the results. However, the results are not very useful in there current form as each row is named according to an *Ensembl* identifier. Whilst gene symbols are problematic and can change over time, they are the names that are most recognisable and make the results easier to navigate.
 
-
-
-There are a number of ways to add annotation, but we will demonstrate how to do this using the *org.Hs.eg.db* package. This package is one of several *organism-level* packages in Bioconductor that are re-built every 6 months. These packages are listed on the [annotation section](http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData) of the Bioconductor, and are installed in the same way as regular Bioconductor packages. An alternative approach is to use `biomaRt`, an interface to the [BioMart](http://www.biomart.org/) resource. BioMart is much more comprehensive, but the organism packages fit better into the Bioconductor workflow.
+There are a number of ways to add annotation, but we will demonstrate how to do this using the *org.Hs.eg.db* package. This package is one of several *organism-level* packages in Bioconductor that are re-built every 6 months. These packages are listed on the [annotation section](http://bioconductor.org/packages/release/BiocViews.html#___AnnotationData) of the Bioconductor, and are installed in the same way as regular Bioconductor packages. An alternative approach is to use `biomaRt`, an interface to the [BioMart](http://www.biomart.org/) resource. BioMart is much more comprehensive, but the organism packages do not require online access once downloaded.
 
 
 ```{r eval=FALSE}
@@ -284,25 +281,6 @@ The packages are larger in size that Bioconductor software pacakges, but essenti
 library(org.Hs.eg.db)
 ```
 
-
-<div class="information">
-The following error may be seen loading this library on some versions of RStudio. 
-
-```
-Show in New WindowClear OutputExpand/Collapse Output
-Error: package or namespace load failed for ‘org.Hs.eg.db’: .onLoad failed in loadNamespace() for 'org.Hs.eg.db', details: call: l$contains error: $ operator is invalid for atomic vectors
-```
-
-A solution is presented in this [forum post](https://coHsunity.rstudio.com/t/problem-in-loading-namespace-of-org-hs-eg-db-package-in-rstudio-server-error-operator-is-invalid-for-atomic-vectors/101789)
-
-
-```{r eval=FALSE}
-options(connectionObserver = NULL)
-library(org.Hs.eg.db)
-```
-
-
-</div>
 
 
 First we need to decide what information we want. In order to see what we can extract we can run the `columns` function on the annotation database.
@@ -322,8 +300,6 @@ We should see `ENSEMBL`, which is the type of key we are going to use in this ca
 ```{r}
 keys(org.Hs.eg.db, keytype="ENSEMBL")[1:10]
 ```
-
-
 
 For the top gene in our analysis the call to the function would be:-
 
@@ -394,7 +370,6 @@ saveRDS(results_annotated, file="Robjects/treatment_Y_vs_N_DESeq_annotated.rds")
 - The publication gives examples of `COL1A1`, `COL1A2` and `COL3A1` as genes that are *up-regulated* in TGF-treated samples vs controls (Figure 6C). Use your data to verify this by 
   + i) plotting the counts for these genes 
   + ii) extracting their p-values
-
 
 </div>
 
@@ -494,7 +469,7 @@ A statistical test can then be applied. As the data are count-based and not norm
 dds <- nbinomWaldTest(dds)
 ```
 
-It may seem like there is a lot to remember, but fortunately there is one convenient function that will apply the three steps. The messages printed serve as reminders of the steps included.
+It may seem like there is a lot to remember, but fortunately there is one convenient function that will apply the three steps (`DESeq`). The messages printed serve as reminders of the steps included.
 
 
 # Acknowledgements

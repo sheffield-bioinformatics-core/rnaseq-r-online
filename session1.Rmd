@@ -24,7 +24,13 @@ High-throughput sequencing is now established as a standard technique for many f
 
 In this workshop, you will be learning how to analyse RNA-seq count data, using R. This will include reading the data into R, quality control and performing differential expression analysis and gene set testing, with a focus on the well-respected DESEq2 analysis workflow. You will learn how to generate common plots for analysis and visualisation of gene expression data, such as boxplots and heatmaps. 
 
-Although we will use RNA-seq data as a case study, the format of the data and methodologies will be highly applicable to other types of high-throughput omics data.
+
+<div class="information">
+We will be discussing **Bulk** RNA-seq only, although some of the methods and techniques will be applicable to *single-cell* RNA-seq. We are planning single-cell RNA-seq training in the future. In the meantime, the homepage for Seurat (a popular R package for single-cell analysis) has lots of useful tutorials.
+
+- [https://satijalab.org/seurat/](Seurat Home page)
+
+</div>
 
 ## Learning outcomes
 
@@ -70,12 +76,12 @@ Analysing an RNAseq experiment begins with sequencing reads. Traditionally, thes
 <div class="information">
 If you want to know more about genome alignment and command-line tools, feel free to check out our workshop on this topic, or the salmon documentation in your own time
 
-- [https://sbc.shef.ac.uk/training/command-line-2020-02-12/](https://sbc.shef.ac.uk/training/command-line-2020-02-12/)
+- [https://sbc.shef.ac.uk/workshops/2020-02-12-command-line/align-and-quantification.nb.html](Alignment and quantification tutorial)
 - [https://salmon.readthedocs.io/en/latest/salmon.html](Documentation for salmon)
 
 </div>
 
-We will be following a workflow that uses the `DESeq2` package. An alternative and, well-respected workflow, is based on the [edgeR and limma packages](https://bioconductor.github.io/BiocWorkshops/rna-seq-analysis-is-easy-as-1-2-3-with-limma-glimma-and-edger.html).
+Although we will be following a workflow that uses the `DESeq2` package, an alternative workflow is available based on the [edgeR and limma packages](https://bioconductor.github.io/BiocWorkshops/rna-seq-analysis-is-easy-as-1-2-3-with-limma-glimma-and-edger.html).
 
 ### Example dataset
 
@@ -100,7 +106,8 @@ We include the sample groups that we want to compare, and any potential *confoun
 
 <div class="information">
 See here for a round-up of common errors to be avoiding when creating spreadsheets
-[Data Carpentry lesson on spreadsheet errors](https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/index.html)
+
+- [Data Carpentry lesson on spreadsheet errors](https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/index.html)
 </div>
 
 The `sampleInfo.txt` in the `meta_data` folder contains basic information about the samples that we will need for the analysis today. This includes the ID for the sample from SRA, an ID assigned by the researcher, and the cell type and developmental stage for each sample.
@@ -120,9 +127,11 @@ sampleinfo
 
 ## Output from salmon
 
-Eventually we will be using the DESeq2 Bioconductor package for differential expression analysis. The specific method of importing your count data into DESeq2 depends on the workflow used to generate the counts. The [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data) gives many different use-cases. For instance, if you have your counts in a single file (e.g. if following our Galaxy tutorials) you can follow [this example](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#countmat)
+Eventually we will be using the DESeq2 Bioconductor package for differential expression analysis. The specific method of importing your count data into DESeq2 depends on the workflow used to generate the counts. The [DESeq2 vignette](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html#input-data) gives many different use-cases. For instance, if you have your counts in a single file (e.g. if following our Galaxy tutorials) you can follow the example later in this tutorial.
 
 ### Overview
+
+After following our R introductory workshops ([https://sbc.shef.ac.uk/r-online/part1.nb.html](https://sbc.shef.ac.uk/r-online/part1.nb.html)), we should be familiar with reading files into R. As we will see, the count data we want to import and text files with a simple structure. However, an RNA-seq experiment may consist of several large files and the techniques we have seen for reading files generally only read a single file at a time. There are often Bioconductor packages or reading input data more efficiently.
 
 We are going to use the [`tximport`](http://dx.doi.org/10.12688/f1000research.7563.1) package to import our count data into R and collapse the data to the *gene level*. This requires us to run a function in the following form:-
 
@@ -148,7 +157,15 @@ So we will need to define the files that we want to import and a transcript mapp
 
 The samples from this study have been *quantified* using `salmon`, which is beyond the scope of this workshop. Note that the salmon analysis produced many other files (e.g. log files), but we will only need the `quant.sf.gz` files for analysis.
 
-The function we are going to use to import the salmon files requires a `vector` comprising the paths to the files that are to be imported. To construct such a vector we can use the following code chunk. We can name each item in the vector according to the directory name. These names will be used eventually to name the columns of our count matrices.
+The function we are going to use to import the salmon files requires a `vector` comprising the paths to the files that are to be imported. The code will be written assuming the following folder structure:-
+
+![](images/salmon_dir.png)
+
+- The salmon files are found in a folder called `salmon_quant`
+- The output for each sample is in a separate folder; named according to sample name
+- The salmon file has the name `quant.sf.gz` (these have been zipped to save space)
+
+The files can be found using the in-built function `list.files`. (`?list.files` for help on this function). We can also name each item in the vector according to the directory name. These names will be used eventually to name the columns of our count matrices.
 
 ```{r}
 dirs <- list.files("salmon_quant/")
@@ -160,30 +177,19 @@ names(quant_files) <- dirs
 quant_files
 ```
 
-### Inspecting the salmon output
+<div class="information">
+If running this code on your own data, you may need to adjust the code to create `quant_files` accordingly.
+</div>
 
-The quant files are simple tab-delimited files that tabulate the counting results for each *transcript* in our chosen organism. Although we will use a specialised Bioconductor package (`tximport`) to import the counts for entire dataset into R, we can inspect the first of the files using the standard `read_tsv` function from the `readr` package.
 
-**This is not usually part of the analysis workflow, but we include it here so we can understand what the raw data are**
-
-```{r}
-quants <- read_tsv(quant_files[1])
-head(quants)
-dim(quants)
-```
-
-Our differential expression analysis will be carried-out at the *gene-level*, so we need to perform an additional level of summarisation before we can proceed. Effectively we need to sum the counts for all exons that belong to each gene. The *mappings* from transcript to genes can be obtained by a pre-built database (such as Ensembl). We have provided such data in a csv file that we can read in (`tx2gene.csv`). See the Appendix if you want to know the details
-
+Our differential expression analysis will be carried-out at the *gene-level*, so we need to perform an additional level of summarisation before we can proceed. Effectively we need to sum the counts for all transcripts that belong to each gene. The *mappings* from transcript to genes can be obtained by a pre-built database (such as Ensembl). We have provided such data in a csv file that we can read in (`tx2gene.csv`). See the Appendix if you want to know the details
 
 
 ```{r}
 tx2gene <- read_csv("tx2gene.csv")
 head(tx2gene)
 ```
-
-
-
-We can import our dataset with the `tximport` package. 
+We can now import our dataset with the `tximport` package. 
 
 ```{r}
 library(tximport)
@@ -194,7 +200,7 @@ txi <- tximport(quant_files,
 
 The resulting object is a "*list*" structure in R which contains a number of components that we can access using a `$` operator
 
-The raw counts can be found using `txi$counts`
+The raw counts can be found using `txi$counts`. The names of each column are the sample names. If we had not defined the `names` of the `quant_files` vector the columns would just have numbers which would not be useful for downstream analysis.
 
 ```{r}
 head(txi$counts)
@@ -217,9 +223,9 @@ dds
 ```
 
 
-The object contains all the counts which can be retrieved using the `assay` function. 
+The object contains all the counts which can be retrieved using the `counts` function. 
 ```{r}
-head(assay(dds))
+head(counts(dds))
 ```
 
 Whereas `colData` will display the meta data that has been stored with the object.
@@ -247,13 +253,13 @@ dds$condition <- as.factor(dds$condition)
 We can look at a few different plots to check that the data is good quality, and that the samples are behaving as we would expect. First, we can check how many reads we have for each sample in the `DESeqDataSet`. The counts themselves are accessed using the `assay` function; giving a matrix of counts. The sum of a particular column is therefore the total number of reads for that sample.
 
 ```{r}
-sum(assay(dds)[,1])
+sum(counts(dds)[,1])
 ```
 
 A convenience function `colSums` exists for calculating the sum of each column in a matrix, returning a `vector` as a result.
 
 ```{r dgeLibrarySizes}
-colSums(assay(dds))
+colSums(counts(dds))
 
 ```
 
@@ -262,7 +268,8 @@ colSums(assay(dds))
 
 <div class="exercise">
 - Use an appropriate function from `dplyr` to add a column containing the number of reads for each sample to the `sampleinfo` data frame.
-- Produce a bar plot to show the Millions of reads for each sample
+- Produce a bar plot to show the Millions of reads for each sample (see below)
+- **EXTRA** The following message appears when we run `tximport`:- `transcripts missing from tx2gene: 1`. Look back at the column headings of the `tx2gene` data frame and determine why this might be. How can we write the code to read `tx2gene.csv` differently and avoid this message.
 </div>
 
 ![](images/lib_size.png)
@@ -270,10 +277,10 @@ colSums(assay(dds))
 
 ### Visualising count distributions
 
-We typically use a `boxplot` to visualise difference the distributions of the columns of a numeric data frame. Applying the `boxplot` function to the raw counts from our dataset reveals something about the nature of the data; the distributions are dominated by a few genes with very large counts.
+We typically use a `boxplot` to visualise difference the distributions of the columns of a numeric data frame. Applying the `boxplot` function to the raw counts from our dataset reveals something about the nature of the data; the distributions are dominated by a few genes with very large counts. We are using the base `boxplot` function here because the count data are not in the *long* data format required by `ggplot2`.
 
 ```{r}
-boxplot(assay(dds))
+boxplot(counts(dds))
 ```
 
 
@@ -286,7 +293,7 @@ We can use the `vst` or `rlog` function from `DESeq2`to compensate for the effec
 vsd <- vst(dds,blind=TRUE)
 # Check distributions of samples using boxplots
 boxplot(assay(vsd), xlab="", ylab="Log2 counts per million",las=2,main="Normalised Distributions")
-# Let's add a blue horizontal line that corresponds to the median logCPM
+
 abline(h=median(assay(vsd)), col="blue")
 ```
 
@@ -296,17 +303,17 @@ abline(h=median(assay(vsd)), col="blue")
 
 <div class="information">
 See here for a nice explanation of PCA
-https://www.youtube.com/watch?v=0Jp4gsfOLMs
+
+- [https://www.youtube.com/watch?v=0Jp4gsfOLMs](https://www.youtube.com/watch?v=0Jp4gsfOLMs)
 </div>
 
-The [(Principal Components Analysis) PCA](http://setosa.io/ev/principal-component-analysis/) plot, shows the samples in the 2D plane spanned by their first two principal components. A principle components analysis is an example of an unsupervised analysis, where we don’t need to specify the groups. If your experiment is well-controlled and has worked well, what we hope to see is that the greatest sources of variation in the data correspond to the treatments/groups we are interested in. It is also an incredibly useful tool for quality control and checking for outliers.
+The [(Principal Components Analysis) PCA](http://setosa.io/ev/principal-component-analysis/) plot, shows the samples in the 2D plane spanned by their first two principal components. A PCA is an example of an unsupervised analysis, where we don’t need to specify the groups. If your experiment is well-controlled and has worked well, what we hope to see is that the greatest sources of variation in the data correspond to the treatments/groups we are interested in. It is also an incredibly useful tool for quality control and checking for outliers.
 
 `DESeq2` has a convenient `plotPCA` function for making the PCA plot, which makes use of the `ggplot2` graphics package. 
 
 
 ```{r}
 plotPCA(vsd,intgroup="condition")
-
 ```
 
 There is also an option to return the values used in the plot for further exploration and customisation. Here we join the PCA results to the meta-data (`sampleinfo`) for plotting.
@@ -314,12 +321,10 @@ There is also an option to return the values used in the plot for further explor
 ```{r}
 library(dplyr)
 library(ggplot2)
-pca_data <- plotPCA(vsd,intgroup="Treated",returnData = TRUE) %>% 
+plotPCA(vsd,intgroup="Treated",returnData = TRUE) %>% 
   dplyr::rename(Run = name) %>% 
-  left_join(sampleinfo)
-
-  ggplot(pca_data,aes(x = PC1, y = PC2,col=group)) + geom_point()
-
+  left_join(sampleinfo) %>% 
+  ggplot(aes(x = PC1, y = PC2,col=group)) + geom_point()
 ```
 
 ## Exercise
