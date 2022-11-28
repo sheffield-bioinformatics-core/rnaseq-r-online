@@ -13,4 +13,5 @@ BiocManager::install(c("limma",
           "readr",
           "stringr",
          "tidyr",
-         "ggplot2"),suppressUpdates=TRUE)
+         "ggplot2",
+         "GeneTonic"),suppressUpdates=TRUE)
