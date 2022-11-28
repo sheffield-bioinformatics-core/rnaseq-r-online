@@ -87,7 +87,7 @@ For clarity, we also make the points slightly transparent and use a different co
 
 ```{r}
 N <- 10
-top_genes <- slice(results_tgf, 1:N) %>% pull(ENSEMBL)
+top_genes <- dplyr::slice(results_tgf, 1:N) %>% pull(ENSEMBL)
 
 results_tgf %>% 
   mutate(Label = ifelse(ENSEMBL %in% top_genes, SYMBOL, "")) %>%  
@@ -145,7 +145,7 @@ dds <- readRDS("Robjects/dds_BACKUP.rds")
 ```{r}
 # pheatmap is a specialised package to make heatmaps
 library(pheatmap)
-top_genes <- slice(results_tgf, 1:10) %>% pull(ENSEMBL)
+top_genes <- dplyr::slice(results_tgf, 1:10) %>% pull(ENSEMBL)
 vsd <- vst(dds)
 
 # top_genes is a vector containing ENSEMBL names of the genes we want to see in the heatmap
@@ -175,7 +175,7 @@ pheatmap(assay(vsd)[top_genes,],
 There are many arguments to explore in `pheatmap`. For example, we might want to use a specific order to the rows and columns rather than using clustering. A useful option is to specific our own labels for the rows (genes). The default is to use the rownames of the count matrix. In our cases these are Ensembl IDs and not easy to interpret.
 
 ```{r}
-gene_labels <- slice(results_tgf, 1:N) %>% pull(SYMBOL)
+gene_labels <- dplyr::slice(results_tgf, 1:N) %>% pull(SYMBOL)
 
 pheatmap(assay(vsd)[top_genes,],
          annotation_col = sampleInfo,
@@ -406,7 +406,7 @@ res_enrich <- shake_enrichResult(enrich_go)
 Finally, we need a table with two columns that can be used to map our gene ids (`ENSEMBL`) to a more-interpretable naming scheme. We have already generated such a table to accompany our differential expression results. The annotation table required by `GeneTonic` needs to be only columns with specific column names.
 
 ```{r}
-anno_df <- dplyr::select(anno,ENSEMBL,SYMBOL)  %>% 
+anno_df <- AnnotationDbi::select(org.Hs.eg.db,keys=rownames(dds),columns="SYMBOL",keytype = "ENSEMBL")  %>% 
   dplyr::rename(gene_id = ENSEMBL,gene_name=SYMBOL)
 ```
 
