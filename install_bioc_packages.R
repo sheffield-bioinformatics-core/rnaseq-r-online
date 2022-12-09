@@ -15,4 +15,5 @@ BiocManager::install(c("limma",
          "tidyr",
          "ggplot2",
          "GeneTonic",
-         "ggupset"),suppressUpdates=TRUE)
+         "ggupset",
+         "ggridges"),suppressUpdates=TRUE)
