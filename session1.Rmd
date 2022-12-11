@@ -28,7 +28,8 @@ In this workshop, you will be learning how to analyse RNA-seq count data, using 
 <div class="information">
 We will be discussing **Bulk** RNA-seq only, although some of the methods and techniques will be applicable to *single-cell* RNA-seq. We are planning single-cell RNA-seq training in the future. In the meantime, the homepage for Seurat (a popular R package for single-cell analysis) has lots of useful tutorials.
 
-- [https://satijalab.org/seurat/](Seurat Home page)
+- [Analysis of Single-cell RNA-seq data - Jan 20th 2023](https://sbc.shef.ac.uk/training/single-cell-2023-01-30/)
+- [Seurat Home page](https://satijalab.org/seurat/)
 
 </div>
 
@@ -71,13 +72,36 @@ There are many steps involved in analysing an RNA-Seq experiment.
 
 Workflow image from Harvard Bioinformatics Core
 
-Analysing an RNAseq experiment begins with sequencing reads. Traditionally, these are aligned to a reference genome, then the number of reads mapped to each gene can be counted. More modern approaches such as `salmon` quantify transcripts directly and do not require genome alignment to have taken place. Either approach results in a table of counts, which is what we perform statistical analyses on in R. While mapping and counting are important and necessary tasks, they are typically performed in languages other than R and so outside the scope of this course.
+Analysing an RNAseq experiment begins with sequencing reads. These are large (typically several Gb) that contain information on the sequences that have been generated for each biological sample; one fastq (or pair of fastqs) for each sample. Each set of four lines describe one sequence (called a "read").
+
+A typical RNA-seq experiment will have 10 - 30 million reads in a fastq file, with each read about 100 bases long
+
+```
+@D0UW5ACXX120511:8:1204:6261:40047/1
+AATGTTTATGTTCTTAAATTTTAGTTGTATATGTGAATCTTTGTAGTTTTTGCTAAAATACTAAGTAATTTATATAAAAGTGAGTTAAGAGATTTTTCTGA
++
+CCCFFFFFHHHHHJJJJJIJJJJJIJJHIIJIJIJJIJJJIJJHIIHIJJJJJJBEGIHIJICGIDICFGIJJJIIJJGJ>F>GAGCGEEHEHHEEFFFD>
+```
+
+As the fastq files are large, we tend to analyse them using command-line software and a computing cluster. The *traditional workflow for RNA-seq* compares the sequences to a reference genome to see which genomic region each read matches the best.
+
+<img src="https://training.galaxyproject.org/training-material/topics/sequence-analysis/images/mapping/mapping.png"/>
+
+Again, this requires more memory than a typical laptop or desktop machine so is performed on a remote computer with large memory. The resulting file is called a *bam* and records the best genomic match for each read. However, as we are interested in gene expression we want to relate these mappings to the positions of genes.
+
+
+A variety of different counting methods can determine how many reads overlap each known gene region. These are know as the raw counts and are the kind of data we will start with today.
+
+<img src="https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-beginners/main/media/htseq.png"/>
+
+Recent tools for RNA-seq analysis (e.g. `salmon`, `kallisto`) do not require the time-consuming step of whole-genome alignment to be performed, and can therefore produce gene-level counts in a much faster time frame. They not require the creation of large bam files, which is useful if constrained by file space  (e.g. if using Galaxy).
 
 <div class="information">
-If you want to know more about genome alignment and command-line tools, feel free to check out our workshop on this topic, or the salmon documentation in your own time
+If you want to know more about genome alignment and command-line tools, feel free to check out our workshop on this topic, or the salmon documentation in your own time. We also have a workshop on using the free online resource Galaxy for RNA-seq pre-processing
 
-- [https://sbc.shef.ac.uk/workshops/2020-02-12-command-line/align-and-quantification.nb.html](Alignment and quantification tutorial)
-- [https://salmon.readthedocs.io/en/latest/salmon.html](Documentation for salmon)
+- [RNA-seq pre-processing in Galaxy](https://sbc.shef.ac.uk/ngs_intro_workshop/03-rna-seq.nb.html)
+- [RNA-seq pre-processing with command-line](https://sbc.shef.ac.uk/workshops/2020-02-12-command-line/)
+- [Documentation for salmon](https://salmon.readthedocs.io/en/latest/salmon.html)
 
 </div>
 
