@@ -97,11 +97,10 @@ A variety of different counting methods can determine how many reads overlap eac
 Recent tools for RNA-seq analysis (e.g. `salmon`, `kallisto`) do not require the time-consuming step of whole-genome alignment to be performed, and can therefore produce gene-level counts in a much faster time frame. They not require the creation of large bam files, which is useful if constrained by file space  (e.g. if using Galaxy).
 
 <div class="information">
-If you want to know more about genome alignment and command-line tools, feel free to check out our workshop on this topic, or the salmon documentation in your own time. We also have a workshop on using the free online resource Galaxy for RNA-seq pre-processing
+If you want to know more about genome alignment and command-line tools we have an upcoming workshop. We also have a workshop on using the free online resource Galaxy for RNA-seq pre-processing
 
 - [RNA-seq pre-processing in Galaxy](https://sbc.shef.ac.uk/ngs_intro_workshop/03-rna-seq.nb.html)
-- [RNA-seq pre-processing with command-line](https://sbc.shef.ac.uk/workshops/2020-02-12-command-line/)
-- [Documentation for salmon](https://salmon.readthedocs.io/en/latest/salmon.html)
+- [RNA-seq pre-processing with command-line](https://sbc.shef.ac.uk/training/command-line-2023-01-16/)
 
 </div>
 
@@ -113,7 +112,15 @@ The data for this tutorial comes from the paper, [*Induction of fibroblast senes
 
 > Cancer associated fibroblasts characterized by an myofibroblastic phenotype play a major role in the tumour microenvironment, being associated with poor prognosis. We found that this cell population is made in part by senescent fibroblasts in vivo. As senescent fibroblasts and myofibroblasts have been shown to share similar tumour promoting functions in vitro we compared the transcriptosomes of these two fibroblast types and performed RNA-seq of human foetal foreskin fibroblasts 2 (HFFF2) treated with 2ng/ml TGF-beta-1 to induce myofibroblast differentiation or 10Gy gamma irradiation to induce senescence. We isolated RNA 7 days upon this treatments changing the medium 3 days before the RNA extraction.
 
-The sequencing reads for this experiment were uploaded to ArrayExpress [Sequencing Read Archive (SRA)](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-3101/) and processed using `salmon`. However, the workflow we will describe can be applied to other sources of count data.
+The sequencing reads for this experiment were uploaded to [ArrayExpress](https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-3101/) and processed using `salmon`. However, the workflow we will describe can be applied to other sources of count data.
+
+<div class="information">
+A really useful resource for obtaining raw sequencing reads is sraexplorer. Given a GEO, ArrayExpress of SRA dataset name it will give you links to download the raw fastq files
+
+- [SRA Explorer](https://sra-explorer.info/)
+
+</div>
+
 
 # Obtaining the metadata
 
