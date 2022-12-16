@@ -3,13 +3,12 @@ title: "Minimal Workflow"
 author: "Mark"
 date: "15/03/2022"
 output:
-  word_document: default
-  html_document: default
+  html_notebook
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE,warning = FALSE,message = FALSE)
+knitr::opts_chunk$set(echo = TRUE,warning = FALSE,message = FALSE)
 ```
 
 
@@ -72,7 +71,6 @@ This will do the differential expression for the design chosen when you created 
 ```{r}
 de <- DESeq(dds)
 results <- results(de, tidy=TRUE)
-
 ```
 ## Annotation
 
@@ -84,6 +82,15 @@ anno <- AnnotationDbi::select(org.Hs.eg.db, keys = rownames(dds),
                               keytype = "ENSEMBL",
                               columns = c("SYMBOL","GENENAME","ENTREZID"))
 ```
+
+
+Print the annotated results
+```{r}
+left_join(results, 
+          anno, 
+          by = c("row"="ENSEMBL"))
+```
+
 
 ## Pathways analysis
 
@@ -105,5 +112,12 @@ enrich_go <- enrichGO(
   qvalueCutoff = 0.05,
   readable=TRUE
 )
+```
+
+```{r}
+dotplot(enrich_go)
+```
+```{r}
+enrichplot::upsetplot(enrich_go)
 ```
 
