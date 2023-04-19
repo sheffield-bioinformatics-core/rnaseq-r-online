@@ -32,33 +32,29 @@ dds <- DESeqDataSetFromTximport(txi,
 
 # Exercise
 
-We now want to use the `Status` as our factor of interest. This can be achieved by changing the `design` our object
+We now want to use the `condition` as our factor of interest. This can be achieved by changing the `design` our object
 
 ```{r}
 dds_condition<- dds
-colData(dds_condition)
-## You will need to change this line to choose the correct comparison
 design(dds_condition) <- ~condition
+```
+```{r}
+results(de_condition)
 ```
 
 The default contrast is already TGF vs CTRL. As above we can create a data frame for further processing.
 
 ```{r}
-de_condition <- DESeq(dds_condition)
-results_condition <- results(de_condition) %>%
-  as.data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL")  
-
-results_condition
-saveRDS(results_condition,"Robjects/results_condition.rds")
+results(de_condition, tidy = TRUE)
 ```
 
 We can filter to discover differentially-expressed genes and write out to a file
 
 ```{r}
 library(readr)
-results_condition %>% filter(abs(log2FoldChange) > 1, padj < 0.05) %>% 
-  write_csv("TGF_vs_CTR_DE.csv")
+results(de_condition, tidy=TRUE) %>% 
+  filter(abs(log2FoldChange) > 1, padj < 0.05) %>% 
+  write_csv("de_analysis/TGF_vs_CTR_DE.csv")
 ```
 
 # Exercise
@@ -72,17 +68,17 @@ anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_condition$ENSEMBL,
             keytype="ENSEMBL") %>% 
 filter(!duplicated(ENSEMBL))
 
-results_tgf <- left_join(results_condition,anno)
+results(de_condition, tidy=TRUE) %>% left_join(anno,by=c("row"="ENSEMBL"))
 
-## save as an R object
-saveRDS(results_tgf, file="Robjects/results_TGF_vs_CTR_annotated.rds")
+
 ```
 
 We can filter the table to our genes of interest. All seem to have significant p-values in the comparison (as expected).
 
 
 ```{r}
-filter(results_tgf, SYMBOL %in% c("COL1A1","COL1A2","COL3A1"))
+results(de_condition, tidy=TRUE) %>% left_join(anno,by=c("row"="ENSEMBL")) %>% 
+  filter(SYMBOL %in% c("COL1A1","COL1A2","COL3A1"))
 ```
 
 The counts can be visualised using the `plotCounts` function. The `mfrow` function is the "base" graphics method for combining plots - in this case putting three plots in a row.
@@ -128,6 +124,7 @@ assay(vsd) %>% data.frame %>%
 Finally, we can plot using a jitter plot and *facet*ing by the gene name.
 
 ```{r}
+library(ggplot2)
 assay(vsd) %>% data.frame %>% 
   tibble::rownames_to_column("ENSEMBL") %>% 
   filter(ENSEMBL %in% my_genes) %>% 
