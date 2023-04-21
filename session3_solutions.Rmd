@@ -99,6 +99,8 @@ pheatmap(assay(vsd)[genes_to_plot,],
 
 # Exercise: Pathways
 
+**Need to fix, as currently this doesn't return anything!**
+
 In order to use the `enrichKEGG` function, we will have to define a set of enriched genes in terms of their `ENTREZID` (instead of `ENSEMBL`)
 
 ```{r}
@@ -111,8 +113,8 @@ Make sure you check the help for `enrichKEGG`, as it uses different argument nam
 
 ```{r}
 library(clusterProfiler)
-enrich_kegg <- enrichKEGG(sigGenesEntrez,
-                       organism = "hsa")
+enrich_kegg <- enrichKEGG(gene = sigGenesEntrez,
+                       organism = "hsa",)
 as.data.frame(enrich_kegg)
 ```
 The same plots can be created from the results. Here is the dot plot.
