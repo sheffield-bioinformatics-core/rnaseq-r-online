@@ -53,6 +53,32 @@ After this workshop the successful learner will have a practical understanding o
 - Live-teaching sessions to create a new markdown to document the analysis
   + including "breakout sessions" for exercise and questions
 
+## Setup
+
+If you are following these notes online independent of our of our workshops, you will need to install some R packages before you start. To do this, copy the following into the RStudio console and press enter
+
+```{r}
+source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-r-online/main/install_bioc_packages.R")
+```
+
+To check that everything worked, now copy and paste the following command. It should print messages to the screen to say that all the packages were installed
+
+```{r}
+source("https://raw.githubusercontent.com/sheffield-bioinformatics-core/rnaseq-r-online/main/check_packages.R")
+
+```
+
+You will also need to download a zip file containing some example RNA-seq data. The zip file also has R markdown files that you can follow along with
+
+- [Data Download link](https://drive.google.com/file/d/178yZSaG1tTr3akeN0DQ2f1Pu2rMoJkBT/view?usp=sharing)
+
+Once you have downloaded the zip file, you will need to *extract* the files to a location on your computer that you would like to work from. We recommend that you create an **RStudio project** from the directory that the files are extracted to.
+
+**File** -> **New Project** -> **Existing Directory**
+
+![](images/new_proj.png)
+
+
 # Learning objectives - Session 1
 
 - Exploring count data and importing these data into R
@@ -138,7 +164,7 @@ We include the sample groups that we want to compare, and any potential *confoun
 <div class="information">
 See here for a round-up of common errors to be avoiding when creating spreadsheets
 
-- [Data Carpentry lesson on spreadsheet errors](https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/index.html)
+- [Data Carpentry lesson on spreadsheet errors](https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes)
 </div>
 
 The `sampleInfo.txt` in the `meta_data` folder contains basic information about the samples that we will need for the analysis today. This includes the ID for the sample from SRA, an ID assigned by the researcher, and the cell type and developmental stage for each sample.
