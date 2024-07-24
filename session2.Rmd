@@ -12,7 +12,11 @@ editor_options:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE,message=FALSE,warning = FALSE)
+suppressPackageStartupMessages(library(tximport))
+suppressPackageStartupMessages(library(DESeq2))
+suppressPackageStartupMessages(library(readr))
+suppressPackageStartupMessages(library(dplyr))
 ```
 
 
@@ -47,7 +51,9 @@ names(quant_files) <- dirs
 
 tx2gene <- read_csv("tx2gene.csv",col_names = FALSE)
 
-txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
+txi <- tximport(quant_files,
+                type="salmon",
+                tx2gene = tx2gene)
 
 sampleinfo <- read_tsv("meta_data/sampleInfo_corrected.txt")
 
