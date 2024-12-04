@@ -9,18 +9,19 @@ output: html_notebook
 Read the raw counts using code from previous session
 
 ```{r}
+library(readr)
 library(tximport)
 library(DESeq2)
 dirs <- list.files(file.path("salmon_quant/"))
 quant_files <- paste0("salmon_quant/",dirs,"/quant.sf.gz")
 names(quant_files) <- dirs
 
-tx2gene <- read.csv("tx2gene.csv")
+tx2gene <- read_csv("tx2gene.csv",col_names = FALSE)
 
-txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene,ignoreTxVersion = TRUE)
+txi <- tximport(quant_files,type="salmon",tx2gene = tx2gene)
 
 sampleinfo <- read.delim("meta_data/sampleInfo_corrected.txt")
-rownames(sampleinfo) <- sampleinfo$run
+
 
 dds <- DESeqDataSetFromTximport(txi, 
                                 colData = sampleinfo,
@@ -62,8 +63,9 @@ results(de_condition, tidy=TRUE) %>%
 In the same way as the workshop, we can obtain annotation using the `org.Hs.eg.db` package
 
 ```{r}
+results_condition <- results(de_condition,tidy = TRUE)
 library(org.Hs.eg.db)
-anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_condition$ENSEMBL,
+anno <- AnnotationDbi::select(org.Hs.eg.db,keys=results_condition$row,
             columns=c("ENSEMBL","SYMBOL","GENENAME","ENTREZID"),
             keytype="ENSEMBL") %>% 
 filter(!duplicated(ENSEMBL))
@@ -90,61 +92,50 @@ plotCounts(dds, "ENSG00000164692", intgroup = "condition")
 plotCounts(dds, "ENSG00000168542", intgroup = "condition")
 ```
 
-A ggplot2 version of the plot is a bit more complicated. We first have to extract the relevant normalised gene intensites from the variance-stabilised object. This matrix has *ENSEMBL* IDs for rows.
+A ggplot2 version of the plot is a bit more complicated. Firstly, we can make use of the `returnData` argument to save the counts used in the plots and create three separate data frames.
 
 ```{r}
-my_genes <- c("ENSG00000108821","ENSG00000164692","ENSG00000168542")
-vsd <- vst(dds)
-assay(vsd) %>% data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL") %>% 
-  filter(ENSEMBL %in% my_genes)
+plot1 <- plotCounts(dds, "ENSG00000108821", intgroup = "condition",returnData = TRUE)
+plot2 <- plotCounts(dds, "ENSG00000164692", intgroup = "condition", returnData = TRUE)
+plot3 <- plotCounts(dds, "ENSG00000168542", intgroup = "condition", returnData = TRUE)
 ```
 
-The matrix is not in the correct shape for `ggplot2`; as it is *wide* rather than *long*. So we will have to use `tidyr` to reshape.
+However, we will want to make separate plots for each gene and none of the data frames we have created contain information about what gene they relate to.
+
+e.g.
 
 ```{r}
-assay(vsd) %>% data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL") %>% 
-  filter(ENSEMBL %in% my_genes) %>% 
-  tidyr::pivot_longer(-ENSEMBL, names_to = "Sample",values_to = "count")
-
+plot1
 ```
 
-R isn't keen on having column names that start with a number, so has decided to be an `X` in front of every sample name. We can remove this using `gsub` and then combine with the sample information
+So we have to mutate each data frame to include a column with the gene name
 
 ```{r}
-assay(vsd) %>% data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL") %>% 
-  filter(ENSEMBL %in% my_genes) %>% 
-  tidyr::pivot_longer(-ENSEMBL, names_to = "Run",values_to = "count") %>% 
-  mutate(Run  = gsub("X","", Run)) %>% 
-  left_join(sampleinfo)
+plot1 <- plotCounts(dds, "ENSG00000108821", intgroup = "condition",returnData = TRUE) %>% 
+  mutate(Gene = "COL1A1")
+plot2 <- plotCounts(dds, "ENSG00000164692", intgroup = "condition", returnData = TRUE) %>% 
+  mutate(Gene = "COL1A2")
+plot3 <- plotCounts(dds, "ENSG00000168542", intgroup = "condition", returnData = TRUE) %>% 
+  mutate(Gene = "COL3A1")
 ```
 
-Finally, we can plot using a jitter plot and *facet*ing by the gene name.
+We can then create a combined data frame with the data from all genes
+
+```{r}
+bind_rows(plot1, plot2, plot3)
+```
+The `ggplot` function can be then be used for plotting. A `geom_jitter` geom adds some random noise to the x-axis and the `facet_wrap` function creates a separate panel for each gene.
 
 ```{r}
 library(ggplot2)
-assay(vsd) %>% data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL") %>% 
-  filter(ENSEMBL %in% my_genes) %>% 
-  tidyr::pivot_longer(-ENSEMBL, names_to = "Run",values_to = "count") %>% 
-  mutate(Run  = gsub("X","", Run)) %>% 
-  left_join(sampleinfo) %>% 
-  ggplot(aes(x = condition, y = count, col=condition)) + geom_jitter(width=0.1) + facet_wrap(~ENSEMBL)
-
+bind_rows(plot1, plot2, plot3) %>% 
+  ggplot(aes(x = condition, y = count, col = condition)) + geom_jitter(width=0.1) + facet_wrap(~Gene)
 ```
-
-If we wanted the gene `SYMBOL` instead of `ENSEMBL`, we could incorporate our `anno` data frame before plotting. This will add the `SYMBOL` for these genes of interest.
+Since we are only looking at CTR and TGF groups, we could choose to exclude `IR` samples by filtering prior to plotting
 
 ```{r}
-assay(vsd) %>% data.frame %>% 
-  tibble::rownames_to_column("ENSEMBL") %>% 
-  filter(ENSEMBL %in% my_genes) %>% 
-  tidyr::pivot_longer(-ENSEMBL, names_to = "Run",values_to = "count") %>% 
-  mutate(Run  = gsub("X","", Run)) %>% 
-  left_join(sampleinfo) %>% 
-  left_join(anno) %>% 
-  ggplot(aes(x = condition, y = count, col=condition)) + geom_jitter(width=0.1) + facet_wrap(~SYMBOL)
+library(ggplot2)
+bind_rows(plot1, plot2, plot3) %>% 
+  filter(condition != "IR") %>% 
+  ggplot(aes(x = condition, y = count, col = condition)) + geom_jitter(width=0.1) + facet_wrap(~Gene)
 ```
-

@@ -195,7 +195,7 @@ If your study involves knocking-out a particular gene, or you have some positive
 
 <div class="exercise">
 - Re-run the analysis to find differentially-expressed genes between the `TGF` treated samples and `CTRL`
-- Write a csv file that contains results for the genes that have a p-value less than 0.05 and a log2 fold change more than 1, or less than -1.
+- Write a csv file that contains results for the genes that have an *adjusted* p-value less than 0.05 and a log2 fold change more than 1, or less than -1 in the contrast of TGF vs CTRL.
   - HINT: So that we don't overwrite our results so far, it may be convenient to create a new `DESeqDataSet` object for the new differential expression analysis. Check the `colData` to see which analyses can be made
 - Use the `plotCounts` function to visually-inspect the most statistically-significant gene identified
 
@@ -281,7 +281,7 @@ BiocManager::install("org.Hs.eg.db")
 BiocManager::install("org.Hs.eg.db")
 ```
 
-The packages are larger in size that Bioconductor software pacakges, but essentially they are databases that can be used to make *offline* queries. 
+The packages are larger in size that Bioconductor software packages, but essentially they are databases that can be used to make *offline* queries. An alternatve (`biomaRt`) that connects to the ensembl [biomart](https://www.ensembl.org/info/data/biomart/index.html) resource will be discussed later.
 
 ```{r message=FALSE}
 library(org.Hs.eg.db)
@@ -372,10 +372,10 @@ saveRDS(results_annotated, file="Robjects/treatment_Y_vs_N_DESeq_annotated.rds")
 
 <div class="exercise">
 
-- Join the annotation table to your results from the DESeq analysis of `TGF` vs `CTR`. Save the resulting data frame as an R object. e.g. `Robjects/results_TGF_vs_CTR_annotated.rds`
+- Join the annotation table to your results from the DESeq analysis of `TGF` vs `CTR`. Save the resulting data frame as a csv file. e.g. `Robjects/results_TGF_vs_CTR_annotated.csv`
 - The publication gives examples of `COL1A1`, `COL1A2` and `COL3A1` as genes that are *up-regulated* in TGF-treated samples vs controls (Figure 6C). Use your data to verify this by 
-  + i) plotting the counts for these genes 
-  + ii) extracting their p-values
+  + i) extracting their p-values
+  + ii) plotting the counts for these genes 
 
 </div>
 
@@ -393,7 +393,7 @@ The `DESeq` workflow applies *median of ratios normalization* that accounts for 
 
 ```{r}
 dds <- estimateSizeFactors(dds) 
-countMatrix <-counts(dds, normalized=TRUE)
+countMatrix <-counts(dds, normalized=TRUE) 
 head(countMatrix)
 write.csv(countMatrix,file="normalized_counts.csv")
 ```
