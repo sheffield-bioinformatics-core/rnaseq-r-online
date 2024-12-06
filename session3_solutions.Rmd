@@ -54,6 +54,8 @@ results_tgf %>%
 
 The tricky part of making a heatmap is deciding which genes to include. The gene names have to be in ENSEMBL format, as the count matrix we will be plotting has ENSEMBL names in the rows.
 
+In the following example, we chose the genes with most extreme log2 fold-change
+
 ```{r}
 # The pheatmap library is needed to make the heatmap
 
@@ -64,42 +66,32 @@ library(pheatmap)
 vsd <- vst(dds)
 sampleInfo <- as.data.frame(colData(dds)[,c("condition","Treated")])
 
-# create a new table that includes gene variability
+## Order results by log2FoldChange and get the most extreme
 
-res_with_var <- mutate(results_tgf, GeneVar = rowSds(assay(vsd))) %>% 
-  filter(!is.na(padj))
-
-# arrange by the new column and extract ENSEMBL ID of the first 100 rows
-
-genes_to_plot <- arrange(res_with_var, desc(GeneVar)) %>% 
-  dplyr::slice(1:100) %>% 
+top_genes_logFC <- results_tgf %>% 
+  arrange(desc(abs(log2FoldChange))) %>% 
+  slice(1:30) %>% 
   pull(ENSEMBL)
 
-
-```
-
-```{r fig.width=12}
-
-pheatmap(assay(vsd)[genes_to_plot,],
-         annotation_col = sampleInfo,
-         scale="row")
-```
-
-```{r fig.width=12}
-gene_labels <- arrange(res_with_var, desc(GeneVar)) %>% 
-  dplyr::slice(1:100) %>% 
+top_genes_logFC_labels <- results_tgf %>% 
+  arrange(desc(abs(log2FoldChange))) %>% 
+  slice(1:30) %>% 
   pull(SYMBOL)
 
-pheatmap(assay(vsd)[genes_to_plot,],
-         annotation_col = sampleInfo,
-         labels_row = gene_labels,
-         scale="row")
+## get the corresponding geen symbols
+
+pheatmap(assay(vsd)[top_genes_logFC,],
+         scale = "row",
+         labels_row = top_genes_logFC_labels)
 
 ```
+
+
+
+
 
 # Exercise: Pathways
 
-**Need to fix, as currently this doesn't return anything!**
 
 In order to use the `enrichKEGG` function, we will have to define a set of enriched genes in terms of their `ENTREZID` (instead of `ENSEMBL`)
 
