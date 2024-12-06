@@ -185,28 +185,20 @@ pheatmap(assay(vsd)[top_genes,],
 
 Given the nature of how the genes were selected for the heatmap, we shouldn't be surprised by the good separation that it demonstrates.
 
-Instead, an un-biased approach can be used where we choose genes based on their variability across the whole dataset. The variability of a gene can be calculated using the convenient `rowSds` function applied to the variance-stabilised counts in the `vsd` object. However, some genes have very low expression and were not tested by `DESeq2`. We can exclude these from the visualisation
-
-```{r}
-res_with_var <- mutate(results_tgf, GeneVar = rowSds(assay(vsd))) %>% 
-  filter(!is.na(padj))
-```
-
-
 # Exercise
 
 <div class="exercise">
 
-- Produce a heatmap of the top 100 most-variable genes (as measure by their standard deviation across the dataset)
-  + First, re-arrange the table `res_with_var` from above by decreasing `GeneVar`
-  + Identify the `ENSEMBL` IDs for the first 100 rows. The `slice` function from `dplyr` might be useful here
-  + Use these 100 IDs in the heatmap instead of the most significant genes that we used previously
-  + you will need to use code something like this, where `genes_to_plot` is the ENSEMBL IDs that you identify
+- Produce a heatmap using the top 30 genes with the most extreme *log2 Fold-Change*
+  + HINT: The `abs` function can be used to convert all negative values to positive.
+- Label the heatmap with the gene `SYMBOL` of the genes
+- Is this heatmap as effective as separating the samples into groups?
 
 ```{r eval=FALSE}
-pheatmap(assay(vsd)[genes_to_plot,],
-         annotation_col = sampleInfo,
-         scale="row")
+
+
+
+
 ```
   
 </div>
@@ -370,6 +362,10 @@ gseaplot(gse_GO,geneSetID = "GO:0002283")
 ```{r}
 
 ```
+
+Other visualisation methods using the clusterProfiler output can be found here:-
+
+https://yulab-smu.top/biomedical-knowledge-mining-book/enrichplot.html
 
 
 # Interactive Visualisation
